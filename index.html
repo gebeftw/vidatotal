@@ -1,5 +1,4 @@
-"use client"
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8"/>
@@ -26,15 +25,15 @@ button{font-family:inherit;cursor:pointer}
 </head>
 <body>
 <div id="root"></div>
-
+ 
 <script type="text/babel">
 const {useState,useEffect,useRef,useCallback}=React;
-
+ 
 /* ─── STORAGE (localStorage para web) ─── */
 const KEY="vidatotal_v3";
 const saveData=(d)=>{try{localStorage.setItem(KEY,JSON.stringify(d))}catch{}};
 const loadData=()=>{try{const r=localStorage.getItem(KEY);return r?JSON.parse(r):null}catch{return null}};
-
+ 
 /* ─── CONSTANTES ─── */
 const DEV_PIN="9999";
 const PILLARS=[
@@ -53,7 +52,7 @@ const INIT={
   habits:[],goals:[],
   finance:{income:0,expenses:[]},
 };
-
+ 
 /* ─── UTILS ─── */
 const avg=arr=>arr.length?+(arr.reduce((a,b)=>a+b,0)/arr.length).toFixed(1):0;
 const today=()=>new Date().toISOString().slice(0,10);
@@ -65,7 +64,7 @@ const calcPSL=(scores,habits,goals)=>{
   const gb=Math.min((goals||[]).filter(g=>g.done).length*2,10);
   return Math.min(Math.round(sa*.7+hb+gb),100);
 };
-
+ 
 /* ─── CHAMADA IA (via proxy seguro ou direta) ─── */
 const askAI=async(system,messages)=>{
   // Para funcionar no seu site, troque /api/chat pela sua rota de backend
@@ -80,7 +79,7 @@ const askAI=async(system,messages)=>{
   const data=await res.json();
   return data.content?.map(b=>b.text||"").join("")||"Erro na resposta.";
 };
-
+ 
 /* ─── RING SVG ─── */
 function Ring({value,max=100,size=90,stroke=8,color="#6366f1",label,sublabel}){
   const r=(size-stroke*2)/2,circ=2*Math.PI*r,fill=(value/max)*circ;
@@ -100,7 +99,7 @@ function Ring({value,max=100,size=90,stroke=8,color="#6366f1",label,sublabel}){
     </div>
   );
 }
-
+ 
 /* ─── SPIDER CHART ─── */
 function Spider({scores}){
   const W=260,cx=W/2,cy=W/2,R=95,n=PILLARS.length;
@@ -118,7 +117,7 @@ function Spider({scores}){
     </svg>
   );
 }
-
+ 
 /* ══════════════════════════════════════════════
    APP PRINCIPAL
 ══════════════════════════════════════════════ */
@@ -129,27 +128,27 @@ function App(){
   const [devMode,setDevMode]=useState(false);
   const [showDevLogin,setShowDevLogin]=useState(false);
   const tapRef=useRef(0);
-
+ 
   useEffect(()=>{
     const d=loadData();
     if(d)setState(d);
     setLoaded(true);
   },[]);
-
+ 
   const update=useCallback((patch)=>setState(prev=>{
     const next=typeof patch==="function"?patch(prev):{...prev,...patch};
     saveData(next);return next;
   }),[]);
-
+ 
   const psl=calcPSL(state.scores,state.habits,state.goals);
   const grade=pslGrade(psl);
-
+ 
   const handleSecretTap=()=>{
     tapRef.current++;
     if(tapRef.current>=3){tapRef.current=0;setShowDevLogin(true);}
     setTimeout(()=>{tapRef.current=0;},1000);
   };
-
+ 
   if(!loaded)return(
     <div style={{background:"#09090f",minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center"}}>
       <div style={{fontSize:40,animation:"spin 1.5s linear infinite"}}>✨</div>
@@ -158,7 +157,7 @@ function App(){
   if(!state.onboarded)return <Onboarding onDone={name=>update({onboarded:true,name})}/>;
   if(devMode)return <DevPanel state={state} update={update} onExit={()=>setDevMode(false)}/>;
   if(showDevLogin)return <DevLogin onSuccess={()=>{setDevMode(true);setShowDevLogin(false);}} onCancel={()=>setShowDevLogin(false)}/>;
-
+ 
   const TABS=[
     {id:"home",  icon:"🏠",label:"Home"},
     {id:"areas", icon:"⭕",label:"Áreas"},
@@ -167,14 +166,14 @@ function App(){
     {id:"finance",icon:"💰",label:"Finanças"},
     {id:"habits",icon:"⚡",label:"Hábitos"},
   ];
-
+ 
   return(
     <div style={{background:"#09090f",minHeight:"100vh",color:"#fff",paddingBottom:84}}>
       <style>{`
         .card{animation:fadeUp .4s ease both}
         input::placeholder,textarea::placeholder{color:rgba(255,255,255,.3)}
       `}</style>
-
+ 
       {/* HEADER */}
       <div style={{padding:"20px 18px 0",display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
         <div onClick={handleSecretTap} style={{cursor:"default"}}>
@@ -190,7 +189,7 @@ function App(){
           <div style={{fontSize:9,color:grade.color,fontWeight:800,letterSpacing:1,marginTop:2}}>{grade.label}</div>
         </div>
       </div>
-
+ 
       {/* TABS TOPO */}
       <div style={{display:"flex",gap:6,padding:"14px 18px 0",overflowX:"auto",scrollbarWidth:"none"}}>
         {TABS.map(t=>(
@@ -201,7 +200,7 @@ function App(){
           }}>{t.icon} {t.label}</button>
         ))}
       </div>
-
+ 
       {/* CONTEÚDO */}
       <div style={{padding:"18px 18px 0"}}>
         {tab==="home"    &&<HomeTab    state={state} update={update} psl={psl} grade={grade}/>}
@@ -211,7 +210,7 @@ function App(){
         {tab==="finance" &&<FinanceTab state={state} update={update}/>}
         {tab==="habits"  &&<HabitsTab  state={state} update={update}/>}
       </div>
-
+ 
       {/* BOTTOM NAV */}
       <div style={{position:"fixed",bottom:0,left:0,right:0,background:"rgba(9,9,15,.97)",backdropFilter:"blur(20px)",borderTop:"1px solid rgba(255,255,255,.08)",display:"flex",justifyContent:"space-around",padding:"8px 0 18px"}}>
         {TABS.map(t=>(
@@ -221,12 +220,12 @@ function App(){
           </button>
         ))}
       </div>
-
+ 
       <CoachFloat state={state}/>
     </div>
   );
 }
-
+ 
 /* ─── ONBOARDING ─── */
 function Onboarding({onDone}){
   const [step,setStep]=useState(0);
@@ -264,7 +263,7 @@ function Onboarding({onDone}){
     </div>
   );
 }
-
+ 
 /* ─── HOME TAB ─── */
 function HomeTab({state,update,psl,grade}){
   const todayH=(state.habits||[]).filter(h=>h.completedDates?.includes(today())).length;
@@ -285,13 +284,13 @@ function HomeTab({state,update,psl,grade}){
           </div>
         </div>
       </div>
-
+ 
       {/* SPIDER */}
       <div className="card" style={{background:"rgba(255,255,255,.04)",border:"1px solid rgba(255,255,255,.08)",borderRadius:22,padding:18}}>
         <div style={{fontSize:13,fontWeight:700,color:"rgba(255,255,255,.6)",marginBottom:12}}>🗺️ Mapa da Vida</div>
         <Spider scores={state.scores}/>
       </div>
-
+ 
       {/* STATS RÁPIDOS */}
       <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
         {[
@@ -307,7 +306,7 @@ function HomeTab({state,update,psl,grade}){
           </div>
         ))}
       </div>
-
+ 
       {/* BARRAS */}
       <div className="card" style={{background:"rgba(255,255,255,.03)",border:"1px solid rgba(255,255,255,.07)",borderRadius:22,padding:18}}>
         <div style={{fontSize:13,fontWeight:700,color:"rgba(255,255,255,.6)",marginBottom:14}}>📊 Todas as Áreas</div>
@@ -332,7 +331,7 @@ function HomeTab({state,update,psl,grade}){
     </div>
   );
 }
-
+ 
 /* ─── AREAS TAB ─── */
 function AreasTab({state,update}){
   const [open,setOpen]=useState(null);
@@ -367,7 +366,7 @@ function AreasTab({state,update}){
     </div>
   );
 }
-
+ 
 /* ─── STUDY TAB ─── */
 function StudyTab(){
   const [mode,setMode]=useState("home");
@@ -378,7 +377,7 @@ function StudyTab(){
   const [cards,setCards]=useState([]);
   const [cardIdx,setCardIdx]=useState(0);
   const [cardFlip,setCardFlip]=useState(false);
-
+ 
   const run=async(system)=>{
     setLoading(true);setResult("");
     try{const r=await askAI(system,[{role:"user",content:`Matéria: ${course||"não informada"}\n\nConteúdo:\n${input}`}]);setResult(r);}
@@ -405,7 +404,7 @@ function StudyTab(){
     {id:"summary",icon:"📋",title:"Resumo Inteligente",sub:"Resumo com bullet points e conceitos-chave",color:"#4ade80"},
     {id:"fc_pre",icon:"🃏",title:"Flashcards IA",sub:"Cartões de memorização gerados automaticamente",color:"#fbbf24"},
   ];
-
+ 
   if(mode==="flashcard"&&cards.length>0)return(
     <div style={{display:"flex",flexDirection:"column",gap:16}}>
       <button onClick={()=>setMode("home")} style={{background:"rgba(255,255,255,.07)",border:"none",color:"rgba(255,255,255,.6)",padding:"8px 16px",borderRadius:10,fontSize:13,alignSelf:"flex-start"}}>← Voltar</button>
@@ -422,7 +421,7 @@ function StudyTab(){
       </div>
     </div>
   );
-
+ 
   if(mode==="fc_pre")return(
     <div style={{display:"flex",flexDirection:"column",gap:14}}>
       <button onClick={()=>setMode("home")} style={{background:"rgba(255,255,255,.07)",border:"none",color:"rgba(255,255,255,.6)",padding:"8px 16px",borderRadius:10,fontSize:13,alignSelf:"flex-start"}}>← Voltar</button>
@@ -433,7 +432,7 @@ function StudyTab(){
       </button>
     </div>
   );
-
+ 
   if(mode!=="home")return(
     <div style={{display:"flex",flexDirection:"column",gap:14}}>
       <button onClick={()=>{setMode("home");setResult("");}} style={{background:"rgba(255,255,255,.07)",border:"none",color:"rgba(255,255,255,.6)",padding:"8px 16px",borderRadius:10,fontSize:13,alignSelf:"flex-start"}}>← Voltar</button>
@@ -446,7 +445,7 @@ function StudyTab(){
       {result&&<div style={{background:"rgba(255,255,255,.04)",border:"1px solid rgba(255,255,255,.08)",borderRadius:16,padding:18,fontSize:13,lineHeight:1.8,whiteSpace:"pre-wrap",color:"rgba(255,255,255,.85)"}}>{result}</div>}
     </div>
   );
-
+ 
   return(
     <div style={{display:"flex",flexDirection:"column",gap:14}}>
       <p style={{color:"rgba(255,255,255,.35)",fontSize:12,margin:0}}>Ferramentas de IA para seus estudos universitários</p>
@@ -463,7 +462,7 @@ function StudyTab(){
     </div>
   );
 }
-
+ 
 /* ─── HOBBIES TAB ─── */
 function HobbiesTab(){
   const [mode,setMode]=useState("home");
@@ -472,7 +471,7 @@ function HobbiesTab(){
   const [result,setResult]=useState("");
   const [loading,setLoading]=useState(false);
   const POPULAR=["🎸 Guitarra","📸 Fotografia","🧘 Yoga","♟️ Xadrez","🎨 Pintura","🏃 Corrida","🌱 Jardinagem","💻 Programação","🍳 Culinária","📚 Leitura","🎮 Games","🎭 Teatro"];
-
+ 
   const findHobbies=async()=>{
     setLoading(true);setResult("");
     try{const r=await askAI("Especialista em desenvolvimento pessoal. Com base no perfil, sugira 5 hobbies perfeitos: por que é ideal, como começar passo a passo, custo inicial, recursos gratuitos. Use emojis. Português.",[{role:"user",content:`Tempo: ${ans.time} | Orçamento: ${ans.budget} | Personalidade: ${ans.personality} | Interesses: ${ans.interests}`}]);setResult(r);setMode("result");}
@@ -485,7 +484,7 @@ function HobbiesTab(){
     catch{setResult("❌ Erro.");setMode("result");}
     setLoading(false);
   };
-
+ 
   if(mode==="result")return(
     <div style={{display:"flex",flexDirection:"column",gap:14}}>
       <button onClick={()=>{setMode("home");setResult("");}} style={{background:"rgba(255,255,255,.07)",border:"none",color:"rgba(255,255,255,.6)",padding:"8px 16px",borderRadius:10,fontSize:13,alignSelf:"flex-start"}}>← Voltar</button>
@@ -547,7 +546,7 @@ function HobbiesTab(){
     </div>
   );
 }
-
+ 
 /* ─── FINANCE TAB ─── */
 function FinanceTab({state,update}){
   const [showAdd,setShowAdd]=useState(false);
@@ -561,7 +560,7 @@ function FinanceTab({state,update}){
   const totalExp=expenses.reduce((s,e)=>s+Number(e.amount),0);
   const balance=income-totalExp;
   const savings=income>0?Math.round((balance/income)*100):0;
-
+ 
   const addExpense=()=>{
     if(!newExp.label||!newExp.amount)return;
     update(prev=>({...prev,finance:{...prev.finance,expenses:[...(prev.finance?.expenses||[]),{...newExp,id:Date.now(),date:today()}]}}));
@@ -573,7 +572,7 @@ function FinanceTab({state,update}){
     catch{setAiR("❌ Erro.");}
     setAiLoading(false);
   };
-
+ 
   return(
     <div style={{display:"flex",flexDirection:"column",gap:16}}>
       <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:10}}>
@@ -638,7 +637,7 @@ function FinanceTab({state,update}){
     </div>
   );
 }
-
+ 
 /* ─── HABITS TAB ─── */
 function HabitsTab({state,update}){
   const [newH,setNewH]=useState("");
@@ -685,7 +684,7 @@ function HabitsTab({state,update}){
     </div>
   );
 }
-
+ 
 /* ─── COACH FLUTUANTE ─── */
 function CoachFloat({state}){
   const [open,setOpen]=useState(false);
@@ -745,7 +744,7 @@ function CoachFloat({state}){
     </>
   );
 }
-
+ 
 /* ─── DEV LOGIN ─── */
 function DevLogin({onSuccess,onCancel}){
   const [pin,setPin]=useState("");
@@ -764,7 +763,7 @@ function DevLogin({onSuccess,onCancel}){
     </div>
   );
 }
-
+ 
 /* ─── DEV PANEL ─── */
 function DevPanel({state,update,onExit}){
   const [devTab,setDevTab]=useState("overview");
@@ -776,12 +775,12 @@ function DevPanel({state,update,onExit}){
   const psl=calcPSL(state.scores,state.habits,state.goals);
   const grade=pslGrade(psl);
   const totalExp=(state.finance?.expenses||[]).reduce((s,e)=>s+Number(e.amount),0);
-
+ 
   const sendBroadcast=async()=>{setLoading(true);setBResult("");try{const r=await askAI("Assistente de comunicação da plataforma Vida Total. Reformule a mensagem do admin de forma profissional, motivadora e com emojis. Português.",[{role:"user",content:broadcast}]);setBResult(r);}catch{setBResult("❌ Erro.");}setLoading(false);};
   const analyzeUser=async()=>{setLoading(true);setAiResult("");try{const r=await askAI("Analista sênior de bem-estar. Analise o perfil: 1) Diagnóstico completo 2) Pontos críticos 3) Plano de suporte 4) Previsão 30 dias 5) Recomendações. Técnico e detalhado. Português.",[{role:"user",content:`Dados: ${JSON.stringify(state)}\nContexto: ${aiPrompt}`}]);setAiResult(r);}catch{setAiResult("❌ Erro.");}setLoading(false);};
-
+ 
   const TABS=[{id:"overview",l:"📊 Overview"},{id:"user",l:"👤 Usuário"},{id:"broadcast",l:"📢 Mensagens"},{id:"aitools",l:"🔬 IA Tools"},{id:"config",l:"⚙️ Config"}];
-
+ 
   return(
     <div style={{background:"#080810",minHeight:"100vh",color:"#fff",fontFamily:"monospace,sans-serif",paddingBottom:20}}>
       <div style={{background:"rgba(99,102,241,.1)",borderBottom:"1px solid rgba(99,102,241,.25)",padding:"16px 18px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
@@ -866,7 +865,7 @@ function DevPanel({state,update,onExit}){
     </div>
   );
 }
-
+ 
 /* ─── RENDER ─── */
 const root=ReactDOM.createRoot(document.getElementById("root"));
 root.render(<App/>);
