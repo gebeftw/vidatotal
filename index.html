@@ -1,788 +1,875 @@
+"use client"
 <!DOCTYPE html>
-
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Vida Total — Transforme todas as áreas da sua vida</title>
-  <meta name="description" content="O app com IA que transforma sua vida financeira, saúde, carreira, estudos e muito mais. PSL Score, Coach IA e controle total." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-```
-:root {
-  --bg:       #09090f;
-  --bg2:      #0f0f1a;
-  --bg3:      #141425;
-  --purple:   #6366f1;
-  --violet:   #8b5cf6;
-  --green:    #4ade80;
-  --orange:   #f97316;
-  --blue:     #38bdf8;
-  --pink:     #f43f5e;
-  --gold:     #fbbf24;
-  --text:     #ffffff;
-  --muted:    rgba(255,255,255,.45);
-  --border:   rgba(255,255,255,.08);
-}
-
-html { scroll-behavior: smooth; }
-
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'DM Sans', sans-serif;
-  overflow-x: hidden;
-  line-height: 1.6;
-}
-
-/* ── NOISE TEXTURE OVERLAY ── */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
-  pointer-events: none;
-  z-index: 0;
-  opacity: .4;
-}
-
-/* ── NAV ── */
-nav {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 18px 6vw;
-  background: rgba(9,9,15,.85);
-  backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--border);
-}
-
-.logo {
-  font-family: 'Playfair Display', serif;
-  font-size: 22px; font-weight: 900;
-  background: linear-gradient(135deg, #fff, #a5b4fc);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-}
-
-.nav-links { display: flex; gap: 32px; align-items: center; }
-.nav-links a { color: var(--muted); text-decoration: none; font-size: 14px; font-weight: 500; transition: color .2s; }
-.nav-links a:hover { color: #fff; }
-
-.btn {
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 12px 28px; border-radius: 50px; font-weight: 700;
-  font-size: 14px; cursor: pointer; text-decoration: none;
-  transition: all .25s; border: none; font-family: 'DM Sans', sans-serif;
-}
-.btn-primary {
-  background: linear-gradient(135deg, var(--purple), var(--violet));
-  color: #fff;
-  box-shadow: 0 8px 32px rgba(99,102,241,.35);
-}
-.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(99,102,241,.5); }
-.btn-outline {
-  background: transparent;
-  border: 1px solid var(--border);
-  color: var(--muted);
-}
-.btn-outline:hover { border-color: rgba(255,255,255,.3); color: #fff; }
-.btn-large { padding: 16px 40px; font-size: 16px; }
-
-/* ── HERO ── */
-.hero {
-  position: relative;
-  min-height: 100vh;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  text-align: center;
-  padding: 120px 6vw 80px;
-  overflow: hidden;
-}
-
-/* mesh gradient bg */
-.hero::after {
-  content: '';
-  position: absolute; inset: 0; z-index: -1;
-  background:
-    radial-gradient(ellipse 80% 60% at 20% 0%, rgba(99,102,241,.18) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 50% at 80% 100%, rgba(139,92,246,.14) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 40% at 50% 50%, rgba(56,189,248,.07) 0%, transparent 60%);
-}
-
-.hero-badge {
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 6px 16px; border-radius: 50px;
-  background: rgba(99,102,241,.12);
-  border: 1px solid rgba(99,102,241,.3);
-  font-size: 12px; font-weight: 600; color: #a5b4fc;
-  letter-spacing: 1px; text-transform: uppercase;
-  margin-bottom: 28px;
-  animation: fadeUp .6s ease both;
-}
-
-.hero-title {
-  font-family: 'Playfair Display', serif;
-  font-size: clamp(44px, 8vw, 88px);
-  font-weight: 900; line-height: 1.08;
-  letter-spacing: -2px;
-  margin-bottom: 24px;
-  animation: fadeUp .6s .1s ease both;
-}
-
-.hero-title .grad {
-  background: linear-gradient(135deg, #fff 30%, #a78bfa 70%, #6366f1 100%);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-}
-
-.hero-title .accent { color: var(--green); }
-
-.hero-sub {
-  font-size: clamp(16px, 2.5vw, 20px);
-  color: var(--muted); max-width: 600px;
-  margin: 0 auto 40px; font-weight: 400;
-  animation: fadeUp .6s .2s ease both;
-}
-
-.hero-ctas {
-  display: flex; gap: 14px; flex-wrap: wrap; justify-content: center;
-  animation: fadeUp .6s .3s ease both;
-  margin-bottom: 72px;
-}
-
-/* PSL DEMO CARD */
-.psl-demo {
-  position: relative;
-  background: rgba(255,255,255,.04);
-  border: 1px solid rgba(99,102,241,.25);
-  border-radius: 28px;
-  padding: 32px;
-  max-width: 780px; width: 100%;
-  margin: 0 auto;
-  animation: fadeUp .7s .4s ease both;
-  backdrop-filter: blur(12px);
-}
-
-.psl-demo::before {
-  content: '';
-  position: absolute; inset: -1px; border-radius: 29px;
-  background: linear-gradient(135deg, rgba(99,102,241,.3), transparent 50%, rgba(139,92,246,.2));
-  z-index: -1;
-}
-
-.psl-inner { display: flex; align-items: center; gap: 28px; flex-wrap: wrap; justify-content: center; }
-
-.psl-ring-wrap { display: flex; flex-direction: column; align-items: center; gap: 8px; }
-
-.psl-score-num {
-  font-family: 'Playfair Display', serif;
-  font-size: 52px; font-weight: 900; color: var(--gold);
-  line-height: 1;
-  text-shadow: 0 0 30px rgba(251,191,36,.4);
-}
-
-.psl-label {
-  font-size: 10px; font-weight: 700; letter-spacing: 3px;
-  color: var(--gold); text-transform: uppercase;
-}
-
-.psl-bars { flex: 1; min-width: 240px; display: flex; flex-direction: column; gap: 10px; }
-
-.bar-item { display: flex; align-items: center; gap: 10px; }
-.bar-item span { font-size: 16px; width: 20px; }
-.bar-item label { font-size: 12px; color: var(--muted); width: 90px; flex-shrink: 0; }
-.bar-track { flex: 1; height: 6px; background: rgba(255,255,255,.07); border-radius: 3px; overflow: hidden; }
-.bar-fill { height: 100%; border-radius: 3px; transition: width 1.5s cubic-bezier(.4,0,.2,1); }
-.bar-val { font-size: 11px; font-weight: 700; width: 24px; text-align: right; }
-
-/* ── SECTIONS ── */
-section { padding: 100px 6vw; position: relative; }
-
-.section-tag {
-  display: inline-block;
-  font-size: 11px; font-weight: 700; letter-spacing: 3px;
-  text-transform: uppercase; color: var(--purple);
-  margin-bottom: 16px;
-}
-
-.section-title {
-  font-family: 'Playfair Display', serif;
-  font-size: clamp(32px, 5vw, 52px);
-  font-weight: 900; line-height: 1.15;
-  margin-bottom: 16px;
-}
-
-.section-sub { font-size: 18px; color: var(--muted); max-width: 560px; }
-
-/* ── FEATURES GRID ── */
-.features-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px; margin-top: 60px;
-}
-
-.feature-card {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 22px; padding: 28px;
-  transition: all .3s;
-  position: relative; overflow: hidden;
-}
-
-.feature-card::before {
-  content: '';
-  position: absolute; top: 0; left: 0; right: 0; height: 2px;
-  background: var(--c, var(--purple));
-  transform: scaleX(0); transform-origin: left;
-  transition: transform .4s ease;
-}
-.feature-card:hover::before { transform: scaleX(1); }
-.feature-card:hover { border-color: rgba(255,255,255,.14); transform: translateY(-4px); }
-
-.feature-icon {
-  width: 52px; height: 52px; border-radius: 14px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 24px; margin-bottom: 18px;
-  background: var(--ibg, rgba(99,102,241,.12));
-}
-
-.feature-title { font-size: 18px; font-weight: 700; margin-bottom: 10px; }
-.feature-desc { font-size: 14px; color: var(--muted); line-height: 1.7; }
-
-/* ── PSL SECTION ── */
-.psl-section {
-  background: var(--bg2);
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-}
-
-.psl-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; margin-top: 60px; }
-
-.psl-levels { display: flex; flex-direction: column; gap: 12px; margin-top: 32px; }
-
-.psl-level {
-  display: flex; align-items: center; gap: 16px;
-  padding: 14px 18px; border-radius: 14px;
-  background: rgba(255,255,255,.03);
-  border: 1px solid rgba(255,255,255,.06);
-  transition: all .2s;
-}
-.psl-level:hover { background: rgba(255,255,255,.06); }
-
-.psl-level-score { font-size: 13px; font-weight: 800; min-width: 60px; }
-.psl-level-name { font-size: 14px; font-weight: 700; }
-.psl-level-desc { font-size: 12px; color: var(--muted); margin-top: 2px; }
-
-/* ── AREAS SECTION ── */
-.areas-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px; margin-top: 60px;
-}
-
-.area-card {
-  padding: 22px 18px; border-radius: 18px;
-  background: var(--bg2); border: 1px solid var(--border);
-  text-align: center; transition: all .3s;
-}
-.area-card:hover { transform: translateY(-6px); border-color: var(--ac); box-shadow: 0 8px 32px rgba(0,0,0,.3); }
-.area-card .emoji { font-size: 32px; margin-bottom: 10px; }
-.area-card .name { font-size: 13px; font-weight: 600; }
-.area-card .bar { height: 4px; background: rgba(255,255,255,.07); border-radius: 2px; margin-top: 12px; overflow: hidden; }
-.area-card .bar-in { height: 100%; border-radius: 2px; background: var(--ac); }
-
-/* ── HOW IT WORKS ── */
-.steps { display: flex; flex-direction: column; gap: 0; margin-top: 60px; max-width: 640px; }
-
-.step {
-  display: flex; gap: 28px; align-items: flex-start;
-  position: relative; padding-bottom: 40px;
-}
-.step:last-child { padding-bottom: 0; }
-.step:last-child .step-line { display: none; }
-
-.step-num {
-  width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0;
-  background: linear-gradient(135deg, var(--purple), var(--violet));
-  display: flex; align-items: center; justify-content: center;
-  font-weight: 900; font-size: 16px;
-  box-shadow: 0 4px 20px rgba(99,102,241,.4);
-}
-
-.step-line {
-  position: absolute; left: 22px; top: 44px;
-  width: 2px; height: calc(100% - 44px);
-  background: linear-gradient(to bottom, rgba(99,102,241,.4), transparent);
-}
-
-.step-content { padding-top: 6px; }
-.step-title { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
-.step-desc { font-size: 14px; color: var(--muted); line-height: 1.7; }
-
-/* ── PRICING ── */
-.pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin-top: 60px; }
-
-.pricing-card {
-  background: var(--bg2); border: 1px solid var(--border);
-  border-radius: 24px; padding: 36px 28px;
-  position: relative; transition: all .3s;
-}
-.pricing-card.featured {
-  background: linear-gradient(160deg, rgba(99,102,241,.12), rgba(139,92,246,.08));
-  border-color: rgba(99,102,241,.4);
-  transform: scale(1.03);
-}
-.pricing-card:hover { transform: translateY(-4px); }
-.pricing-card.featured:hover { transform: scale(1.03) translateY(-4px); }
-
-.pricing-badge {
-  position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
-  padding: 4px 16px; border-radius: 50px;
-  background: linear-gradient(135deg, var(--purple), var(--violet));
-  font-size: 11px; font-weight: 700; white-space: nowrap;
-}
-
-.pricing-name { font-size: 14px; color: var(--muted); font-weight: 600; margin-bottom: 12px; }
-.pricing-price { font-family: 'Playfair Display', serif; font-size: 48px; font-weight: 900; line-height: 1; margin-bottom: 6px; }
-.pricing-period { font-size: 13px; color: var(--muted); margin-bottom: 28px; }
-.pricing-features { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
-.pricing-features li { font-size: 14px; display: flex; align-items: center; gap: 10px; }
-.pricing-features li::before { content: '✓'; color: var(--green); font-weight: 700; }
-.pricing-features li.off { color: var(--muted); }
-.pricing-features li.off::before { content: '×'; color: rgba(255,255,255,.2); }
-
-/* ── TESTIMONIALS ── */
-.testimonials-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-top: 60px; }
-
-.testimonial {
-  background: var(--bg2); border: 1px solid var(--border);
-  border-radius: 20px; padding: 24px;
-}
-
-.testi-stars { color: var(--gold); font-size: 14px; margin-bottom: 14px; }
-.testi-text { font-size: 14px; line-height: 1.8; color: rgba(255,255,255,.75); margin-bottom: 18px; font-style: italic; }
-.testi-author { display: flex; align-items: center; gap: 12px; }
-.testi-avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; }
-.testi-name { font-size: 13px; font-weight: 700; }
-.testi-role { font-size: 11px; color: var(--muted); }
-
-/* ── CTA SECTION ── */
-.cta-section {
-  text-align: center;
-  background: linear-gradient(160deg, rgba(99,102,241,.1), rgba(139,92,246,.08));
-  border-top: 1px solid rgba(99,102,241,.2);
-  border-bottom: 1px solid rgba(99,102,241,.2);
-}
-
-/* ── FOOTER ── */
-footer {
-  padding: 48px 6vw;
-  border-top: 1px solid var(--border);
-  display: flex; justify-content: space-between; align-items: center;
-  flex-wrap: wrap; gap: 20px;
-}
-
-.footer-links { display: flex; gap: 24px; }
-.footer-links a { color: var(--muted); font-size: 13px; text-decoration: none; transition: color .2s; }
-.footer-links a:hover { color: #fff; }
-
-/* ── ANIMATIONS ── */
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50%       { transform: translateY(-10px); }
-}
-
-@keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 20px rgba(99,102,241,.2); }
-  50%       { box-shadow: 0 0 50px rgba(99,102,241,.5); }
-}
-
-.float { animation: float 4s ease-in-out infinite; }
-
-/* ── SCROLL REVEAL ── */
-.reveal { opacity: 0; transform: translateY(24px); transition: all .7s cubic-bezier(.4,0,.2,1); }
-.reveal.visible { opacity: 1; transform: none; }
-
-/* ── RESPONSIVE ── */
-@media (max-width: 768px) {
-  .nav-links { display: none; }
-  .psl-grid { grid-template-columns: 1fr; }
-  .areas-grid { grid-template-columns: repeat(2, 1fr); }
-  .pricing-card.featured { transform: none; }
-}
-
-@media (max-width: 480px) {
-  .areas-grid { grid-template-columns: repeat(2, 1fr); }
-}
-```
-
-  </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Vida Total ✨</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:#09090f;color:#fff;font-family:'DM Sans',system-ui,sans-serif;overflow-x:hidden}
+input,textarea,select{outline:none;font-family:inherit}
+button{font-family:inherit;cursor:pointer}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-thumb{background:#333;border-radius:2px}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes glow{0%,100%{box-shadow:0 0 20px rgba(99,102,241,.3)}50%{box-shadow:0 0 40px rgba(99,102,241,.6)}}
+@keyframes pulse{0%,100%{opacity:.3;transform:scale(.8)}50%{opacity:1;transform:scale(1)}}
+.card{animation:fadeUp .4s ease both}
+</style>
 </head>
 <body>
+<div id="root"></div>
 
-<!-- ── NAV ── -->
+<script type="text/babel">
+const {useState,useEffect,useRef,useCallback}=React;
 
-<nav>
-  <div class="logo">✨ Vida Total</div>
-  <div class="nav-links">
-    <a href="#features">Funcionalidades</a>
-    <a href="#psl">PSL Score</a>
-    <a href="#areas">Áreas</a>
-    <a href="#pricing">Planos</a>
-    <a href="app.html" class="btn btn-primary" style="padding:10px 22px;font-size:13px;">Abrir App →</a>
-  </div>
-</nav>
+/* ─── STORAGE (localStorage para web) ─── */
+const KEY="vidatotal_v3";
+const saveData=(d)=>{try{localStorage.setItem(KEY,JSON.stringify(d))}catch{}};
+const loadData=()=>{try{const r=localStorage.getItem(KEY);return r?JSON.parse(r):null}catch{return null}};
 
-<!-- ── HERO ── -->
+/* ─── CONSTANTES ─── */
+const DEV_PIN="9999";
+const PILLARS=[
+  {id:"finance", icon:"💰",label:"Finanças",       color:"#4ade80"},
+  {id:"health",  icon:"🔥",label:"Saúde & Corpo",  color:"#f97316"},
+  {id:"mind",    icon:"🧠",label:"Mente",           color:"#a78bfa"},
+  {id:"career",  icon:"🚀",label:"Carreira",        color:"#38bdf8"},
+  {id:"study",   icon:"📚",label:"Estudos",         color:"#fb923c"},
+  {id:"relations",icon:"❤️",label:"Relacionamentos",color:"#f43f5e"},
+  {id:"hobbies", icon:"🎨",label:"Hobbies",         color:"#34d399"},
+  {id:"spirit",  icon:"✨",label:"Espiritualidade", color:"#c084fc"},
+];
+const INIT={
+  name:"",onboarded:false,
+  scores:Object.fromEntries(PILLARS.map(p=>[p.id,5])),
+  habits:[],goals:[],
+  finance:{income:0,expenses:[]},
+};
 
-<section class="hero">
-  <div class="hero-badge">✨ Powered by Claude AI — Inteligência Real</div>
+/* ─── UTILS ─── */
+const avg=arr=>arr.length?+(arr.reduce((a,b)=>a+b,0)/arr.length).toFixed(1):0;
+const today=()=>new Date().toISOString().slice(0,10);
+const scoreColor=s=>s>=8?"#4ade80":s>=6?"#fbbf24":s>=4?"#f97316":"#f43f5e";
+const pslGrade=s=>s>=90?{label:"ELITE",color:"#fbbf24"}:s>=75?{label:"AVANÇADO",color:"#4ade80"}:s>=60?{label:"CRESCENDO",color:"#38bdf8"}:s>=40?{label:"REGULAR",color:"#f97316"}:{label:"INICIANTE",color:"#f43f5e"};
+const calcPSL=(scores,habits,goals)=>{
+  const sa=avg(Object.values(scores))*10;
+  const hb=Math.min((habits||[]).filter(h=>h.completedDates?.includes(today())).length*3,20);
+  const gb=Math.min((goals||[]).filter(g=>g.done).length*2,10);
+  return Math.min(Math.round(sa*.7+hb+gb),100);
+};
 
-  <h1 class="hero-title">
-    Transforme<br>
-    <span class="grad">todas as áreas</span><br>
-    da sua vida
-  </h1>
-
-  <p class="hero-sub">
-    O primeiro app com IA que acompanha seu crescimento em finanças, saúde, carreira, estudos, hobbies e muito mais — com um score pessoal em tempo real.
-  </p>
-
-  <div class="hero-ctas">
-    <a href="app.html" class="btn btn-primary btn-large">Começar Grátis 🚀</a>
-    <a href="#features" class="btn btn-outline btn-large">Ver como funciona</a>
-  </div>
-
-  <!-- PSL DEMO -->
-
-  <div class="psl-demo float">
-    <div style="font-size:11px;color:rgba(255,255,255,.35);letter-spacing:3px;text-align:center;margin-bottom:24px;font-weight:700;">SEU PAINEL DE VIDA</div>
-    <div class="psl-inner">
-      <div class="psl-ring-wrap">
-        <div class="psl-score-num">78</div>
-        <div class="psl-label">PSL Score</div>
-        <div style="font-size:12px;color:#4ade80;margin-top:6px;font-weight:700;">▲ AVANÇADO</div>
-      </div>
-      <div class="psl-bars">
-        <div class="bar-item"><span>💰</span><label>Finanças</label><div class="bar-track"><div class="bar-fill" style="width:80%;background:#4ade80"></div></div><span class="bar-val" style="color:#4ade80">8</span></div>
-        <div class="bar-item"><span>🔥</span><label>Saúde</label><div class="bar-track"><div class="bar-fill" style="width:70%;background:#f97316"></div></div><span class="bar-val" style="color:#f97316">7</span></div>
-        <div class="bar-item"><span>🧠</span><label>Mente</label><div class="bar-track"><div class="bar-fill" style="width:90%;background:#a78bfa"></div></div><span class="bar-val" style="color:#a78bfa">9</span></div>
-        <div class="bar-item"><span>🚀</span><label>Carreira</label><div class="bar-track"><div class="bar-fill" style="width:60%;background:#38bdf8"></div></div><span class="bar-val" style="color:#38bdf8">6</span></div>
-        <div class="bar-item"><span>📚</span><label>Estudos</label><div class="bar-track"><div class="bar-fill" style="width:75%;background:#fb923c"></div></div><span class="bar-val" style="color:#fb923c">7</span></div>
-        <div class="bar-item"><span>❤️</span><label>Relações</label><div class="bar-track"><div class="bar-fill" style="width:85%;background:#f43f5e"></div></div><span class="bar-val" style="color:#f43f5e">8</span></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ── FEATURES ── -->
-
-<section id="features">
-  <div class="reveal">
-    <div class="section-tag">◆ Funcionalidades</div>
-    <h2 class="section-title">Tudo que você precisa<br>para crescer de verdade</h2>
-    <p class="section-sub">Ferramentas poderosas movidas por IA, pensadas para cada dimensão da sua vida.</p>
-  </div>
-
-  <div class="features-grid">
-    <div class="feature-card reveal" style="--c:#fbbf24">
-      <div class="feature-icon" style="--ibg:rgba(251,191,36,.1)">📊</div>
-      <div class="feature-title">PSL Score</div>
-      <div class="feature-desc">Personal Success Level — seu índice único de 0 a 100 que mede seu crescimento em todas as dimensões da vida. Atualizado em tempo real conforme você evolui.</div>
-    </div>
-    <div class="feature-card reveal" style="--c:#a78bfa">
-      <div class="feature-icon" style="--ibg:rgba(167,139,250,.1)">🤖</div>
-      <div class="feature-title">Coach IA Pessoal</div>
-      <div class="feature-desc">Um coach disponível 24h que conhece seus dados reais — scores, hábitos, finanças — e dá orientações precisas e personalizadas para o seu momento.</div>
-    </div>
-    <div class="feature-card reveal" style="--c:#fb923c">
-      <div class="feature-icon" style="--ibg:rgba(251,146,60,.1)">📚</div>
-      <div class="feature-title">IA para Estudos Universitários</div>
-      <div class="feature-desc">Cole qualquer conteúdo e receba explicações didáticas, resumos organizados, questões com gabarito e flashcards interativos gerados automaticamente.</div>
-    </div>
-    <div class="feature-card reveal" style="--c:#34d399">
-      <div class="feature-icon" style="--ibg:rgba(52,211,153,.1)">🎨</div>
-      <div class="feature-title">Descoberta de Hobbies</div>
-      <div class="feature-desc">A IA analisa seu perfil e sugere hobbies perfeitos para você, com guias completos de como começar, custos estimados e comunidades para entrar.</div>
-    </div>
-    <div class="feature-card reveal" style="--c:#4ade80">
-      <div class="feature-icon" style="--ibg:rgba(74,222,128,.1)">💰</div>
-      <div class="feature-title">Controle Financeiro Inteligente</div>
-      <div class="feature-desc">Registre renda e gastos, visualize por categoria, monitore sua taxa de poupança e consulte o assistente financeiro IA a qualquer momento.</div>
-    </div>
-    <div class="feature-card reveal" style="--c:#38bdf8">
-      <div class="feature-icon" style="--ibg:rgba(56,189,248,.1)">⚡</div>
-      <div class="feature-title">Hábitos com Streak</div>
-      <div class="feature-desc">Crie e acompanhe hábitos diários com contagem de dias consecutivos. Visualize seu progresso de hoje e construa consistência de verdade.</div>
-    </div>
-  </div>
-</section>
-
-<!-- ── PSL SCORE ── -->
-
-<section id="psl" class="psl-section">
-  <div class="psl-grid">
-    <div class="reveal">
-      <div class="section-tag">◆ PSL Score</div>
-      <h2 class="section-title">Seu índice pessoal<br>de evolução</h2>
-      <p class="section-sub" style="margin-bottom:0">O PSL Score (Personal Success Level) é calculado automaticamente com base nas suas notas em 8 áreas da vida, hábitos concluídos e metas alcançadas.</p>
-
-```
-  <div class="psl-levels">
-    <div class="psl-level"><span class="psl-level-score" style="color:#f43f5e">0–39</span><div><div class="psl-level-name">Iniciante</div><div class="psl-level-desc">Hora de dar o primeiro passo</div></div></div>
-    <div class="psl-level"><span class="psl-level-score" style="color:#f97316">40–59</span><div><div class="psl-level-name">Regular</div><div class="psl-level-desc">Progresso visível, foco nas lacunas</div></div></div>
-    <div class="psl-level"><span class="psl-level-score" style="color:#38bdf8">60–74</span><div><div class="psl-level-name">Crescendo</div><div class="psl-level-desc">Consistência construindo resultados</div></div></div>
-    <div class="psl-level"><span class="psl-level-score" style="color:#4ade80">75–89</span><div><div class="psl-level-name">Avançado</div><div class="psl-level-desc">Alta performance na maioria das áreas</div></div></div>
-    <div class="psl-level"><span class="psl-level-score" style="color:#fbbf24">90–100</span><div><div class="psl-level-name">Elite ✦</div><div class="psl-level-desc">Domínio completo da própria vida</div></div></div>
-  </div>
-</div>
-
-<div class="reveal" style="display:flex;flex-direction:column;gap:16px">
-  <div style="background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.2);border-radius:22px;padding:28px;text-align:center">
-    <div style="font-size:72px;font-family:'Playfair Display',serif;font-weight:900;color:#fbbf24;text-shadow:0 0 40px rgba(251,191,36,.4);line-height:1">78</div>
-    <div style="font-size:12px;font-weight:700;letter-spacing:3px;color:#fbbf24;margin-top:4px">AVANÇADO</div>
-    <div style="font-size:13px;color:rgba(255,255,255,.4);margin-top:10px">Score atual do exemplo</div>
-    <div style="height:6px;background:rgba(255,255,255,.07);border-radius:3px;margin-top:16px">
-      <div style="height:100%;width:78%;background:linear-gradient(90deg,#fbbf24,#f97316);border-radius:3px"></div>
-    </div>
-  </div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-    <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:16px;text-align:center">
-      <div style="font-size:10px;color:rgba(255,255,255,.35);margin-bottom:6px">HÁBITOS HOJE</div>
-      <div style="font-size:24px;font-weight:900;color:#fbbf24">5/6</div>
-    </div>
-    <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:16px;text-align:center">
-      <div style="font-size:10px;color:rgba(255,255,255,.35);margin-bottom:6px">METAS FEITAS</div>
-      <div style="font-size:24px;font-weight:900;color:#4ade80">3/5</div>
-    </div>
-  </div>
-</div>
-```
-
-  </div>
-</section>
-
-<!-- ── AREAS ── -->
-
-<section id="areas">
-  <div style="text-align:center" class="reveal">
-    <div class="section-tag">◆ 8 Áreas da Vida</div>
-    <h2 class="section-title">Controle total,<br>em todas as dimensões</h2>
-    <p class="section-sub" style="margin:0 auto">Avalie, monitore e melhore cada pilar da sua vida com orientação de IA personalizada.</p>
-  </div>
-
-  <div class="areas-grid" style="margin-top:60px">
-    <div class="area-card reveal" style="--ac:#4ade80"><div class="emoji">💰</div><div class="name">Finanças</div><div class="bar"><div class="bar-in" style="width:80%"></div></div></div>
-    <div class="area-card reveal" style="--ac:#f97316"><div class="emoji">🔥</div><div class="name">Saúde & Corpo</div><div class="bar"><div class="bar-in" style="width:70%"></div></div></div>
-    <div class="area-card reveal" style="--ac:#a78bfa"><div class="emoji">🧠</div><div class="name">Mente</div><div class="bar"><div class="bar-in" style="width:90%"></div></div></div>
-    <div class="area-card reveal" style="--ac:#38bdf8"><div class="emoji">🚀</div><div class="name">Carreira</div><div class="bar"><div class="bar-in" style="width:60%"></div></div></div>
-    <div class="area-card reveal" style="--ac:#fb923c"><div class="emoji">📚</div><div class="name">Estudos</div><div class="bar"><div class="bar-in" style="width:75%"></div></div></div>
-    <div class="area-card reveal" style="--ac:#f43f5e"><div class="emoji">❤️</div><div class="name">Relacionamentos</div><div class="bar"><div class="bar-in" style="width:85%"></div></div></div>
-    <div class="area-card reveal" style="--ac:#34d399"><div class="emoji">🎨</div><div class="name">Hobbies</div><div class="bar"><div class="bar-in" style="width:55%"></div></div></div>
-    <div class="area-card reveal" style="--ac:#c084fc"><div class="emoji">✨</div><div class="name">Espiritualidade</div><div class="bar"><div class="bar-in" style="width:65%"></div></div></div>
-  </div>
-</section>
-
-<!-- ── HOW IT WORKS ── -->
-
-<section style="background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start;max-width:1100px;margin:0 auto">
-    <div class="reveal">
-      <div class="section-tag">◆ Como Funciona</div>
-      <h2 class="section-title">Simples de usar,<br>poderoso por dentro</h2>
-      <div class="steps">
-        <div class="step">
-          <div class="step-num">1</div>
-          <div class="step-line"></div>
-          <div class="step-content">
-            <div class="step-title">Crie seu perfil</div>
-            <div class="step-desc">Em 2 minutos você define seu nome e passa pelo onboarding. O app já começa a calcular seu PSL Score inicial.</div>
-          </div>
-        </div>
-        <div class="step">
-          <div class="step-num">2</div>
-          <div class="step-line"></div>
-          <div class="step-content">
-            <div class="step-title">Avalie suas áreas</div>
-            <div class="step-desc">Dê uma nota de 1 a 10 para cada uma das 8 dimensões da sua vida. O mapa radar é gerado instantaneamente.</div>
-          </div>
-        </div>
-        <div class="step">
-          <div class="step-num">3</div>
-          <div class="step-line"></div>
-          <div class="step-content">
-            <div class="step-title">Ative seus hábitos</div>
-            <div class="step-desc">Crie hábitos diários, dê check todos os dias e veja seu streak crescer. Cada hábito aumenta seu PSL Score.</div>
-          </div>
-        </div>
-        <div class="step">
-          <div class="step-num">4</div>
-          <div class="step-line"></div>
-          <div class="step-content">
-            <div class="step-title">Use o Coach IA</div>
-            <div class="step-desc">Converse com seu coach pessoal a qualquer momento. Ele conhece todos os seus dados e dá conselhos reais.</div>
-          </div>
-        </div>
-        <div class="step">
-          <div class="step-num">5</div>
-          <div class="step-line"></div>
-          <div class="step-content">
-            <div class="step-title">Veja sua evolução</div>
-            <div class="step-desc">Acompanhe o PSL Score subindo conforme você age. Cada decisão certa fica registrada e refletida nos seus números.</div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="reveal" style="position:sticky;top:100px">
-      <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:24px;padding:28px">
-        <div style="font-size:12px;color:rgba(255,255,255,.3);letter-spacing:2px;margin-bottom:20px">🤖 COACH IA — CHAT AO VIVO</div>
-        <div style="display:flex;flex-direction:column;gap:12px">
-          <div style="background:rgba(99,102,241,.12);border:1px solid rgba(99,102,241,.2);border-radius:16px 16px 16px 4px;padding:14px;font-size:13px;line-height:1.6">Olá! Analisei seus dados. Sua área mais fraca é <strong>Carreira (6/10)</strong>. Quer que eu crie um plano de ação para essa semana? 🎯</div>
-          <div style="background:rgba(255,255,255,.07);border-radius:16px 16px 4px 16px;padding:12px;font-size:13px;align-self:flex-end;max-width:80%">Sim! Quanto tempo terei que dedicar?</div>
-          <div style="background:rgba(99,102,241,.12);border:1px solid rgba(99,102,241,.2);border-radius:16px 16px 16px 4px;padding:14px;font-size:13px;line-height:1.6">Perfeito! Com <strong>30 minutos por dia</strong> você pode: ✦ Atualizar LinkedIn, ✦ Fazer 1 curso online, ✦ Enviar 3 mensagens de networking. Posso detalhar cada etapa? 🚀</div>
-        </div>
-        <div style="margin-top:16px;display:flex;gap:8px">
-          <div style="flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:10px 14px;font-size:13px;color:rgba(255,255,255,.3)">Pergunte ao coach...</div>
-          <div style="width:36px;height:36px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px">→</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ── TESTIMONIALS ── -->
-
-<section>
-  <div style="text-align:center" class="reveal">
-    <div class="section-tag">◆ Depoimentos</div>
-    <h2 class="section-title">Vidas que já<br>foram transformadas</h2>
-  </div>
-  <div class="testimonials-grid">
-    <div class="testimonial reveal">
-      <div class="testi-stars">★★★★★</div>
-      <div class="testi-text">"Em 3 semanas meu PSL Score foi de 42 para 67. O coach IA identificou exatamente onde eu estava travado nas finanças e me deu um plano realista."</div>
-      <div class="testi-author"><div class="testi-avatar" style="background:rgba(74,222,128,.15)">👨</div><div><div class="testi-name">Rafael M.</div><div class="testi-role">Engenheiro, 28 anos</div></div></div>
-    </div>
-    <div class="testimonial reveal">
-      <div class="testi-stars">★★★★★</div>
-      <div class="testi-text">"A função de estudos universitários salvou meu semestre. Colei o conteúdo de Cálculo e recebi uma explicação que meu professor nunca conseguiu dar."</div>
-      <div class="testi-author"><div class="testi-avatar" style="background:rgba(167,139,250,.15)">👩</div><div><div class="testi-name">Camila S.</div><div class="testi-role">Estudante de Engenharia</div></div></div>
-    </div>
-    <div class="testimonial reveal">
-      <div class="testi-stars">★★★★★</div>
-      <div class="testi-text">"O descobridor de hobbies me apresentou ao xadrez. Nunca achei que fosse gostar, mas agora jogo 30 minutos por dia e minha área mental foi de 5 para 9."</div>
-      <div class="testi-author"><div class="testi-avatar" style="background:rgba(56,189,248,.15)">👨</div><div><div class="testi-name">Lucas B.</div><div class="testi-role">Analista, 31 anos</div></div></div>
-    </div>
-  </div>
-</section>
-
-<!-- ── PRICING ── -->
-
-<section id="pricing" style="background:var(--bg2);border-top:1px solid var(--border)">
-  <div style="text-align:center" class="reveal">
-    <div class="section-tag">◆ Planos</div>
-    <h2 class="section-title">Invista na melhor<br>versão de você</h2>
-    <p class="section-sub" style="margin:0 auto">Comece grátis. Faça upgrade quando quiser mais.</p>
-  </div>
-  <div class="pricing-grid">
-    <div class="pricing-card reveal">
-      <div class="pricing-name">GRATUITO</div>
-      <div class="pricing-price">R$0</div>
-      <div class="pricing-period">para sempre</div>
-      <ul class="pricing-features">
-        <li>PSL Score completo</li>
-        <li>8 áreas da vida</li>
-        <li>Até 5 hábitos</li>
-        <li>Coach IA (10 msgs/dia)</li>
-        <li class="off">Estudo universitário IA</li>
-        <li class="off">Finder de Hobbies</li>
-        <li class="off">Controle financeiro avançado</li>
-      </ul>
-      <a href="app.html" class="btn btn-outline" style="width:100%;justify-content:center">Começar Grátis</a>
-    </div>
-    <div class="pricing-card featured reveal">
-      <div class="pricing-badge">🔥 MAIS POPULAR</div>
-      <div class="pricing-name">PRO</div>
-      <div class="pricing-price" style="background:linear-gradient(135deg,#fff,#a5b4fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent">R$29</div>
-      <div class="pricing-period">por mês · cancele quando quiser</div>
-      <ul class="pricing-features">
-        <li>Tudo do Gratuito</li>
-        <li>Hábitos ilimitados</li>
-        <li>Coach IA ilimitado</li>
-        <li>Estudo universitário IA</li>
-        <li>Finder de Hobbies</li>
-        <li>Controle financeiro completo</li>
-        <li>Histórico e relatórios</li>
-      </ul>
-      <a href="app.html" class="btn btn-primary" style="width:100%;justify-content:center;animation:pulse-glow 2s ease infinite">Assinar Pro →</a>
-    </div>
-    <div class="pricing-card reveal">
-      <div class="pricing-name">ANUAL</div>
-      <div class="pricing-price">R$19</div>
-      <div class="pricing-period">por mês · cobrado anualmente <span style="color:#4ade80;font-size:12px">— economize 35%</span></div>
-      <ul class="pricing-features">
-        <li>Tudo do Pro</li>
-        <li>Acesso antecipado a novidades</li>
-        <li>Suporte prioritário</li>
-        <li>Badge exclusivo Elite</li>
-      </ul>
-      <a href="app.html" class="btn btn-outline" style="width:100%;justify-content:center">Assinar Anual</a>
-    </div>
-  </div>
-</section>
-
-<!-- ── CTA ── -->
-
-<section class="cta-section">
-  <div class="reveal" style="max-width:600px;margin:0 auto;text-align:center">
-    <div style="font-size:56px;margin-bottom:20px">✨</div>
-    <h2 class="section-title">Sua melhor vida<br>começa agora</h2>
-    <p style="color:var(--muted);font-size:18px;margin:20px 0 40px">Junte-se a milhares de pessoas que já estão transformando sua vida com o Vida Total.</p>
-    <a href="app.html" class="btn btn-primary btn-large">Começar Gratuitamente 🚀</a>
-    <div style="margin-top:20px;font-size:13px;color:rgba(255,255,255,.25)">Sem cartão de crédito · Dados salvos automaticamente</div>
-  </div>
-</section>
-
-<!-- ── FOOTER ── -->
-
-<footer>
-  <div class="logo">✨ Vida Total</div>
-  <div class="footer-links">
-    <a href="#">Privacidade</a>
-    <a href="#">Termos</a>
-    <a href="#">Suporte</a>
-    <a href="app.html">Abrir App</a>
-  </div>
-  <div style="font-size:13px;color:rgba(255,255,255,.2)">© 2025 Vida Total. Todos os direitos reservados.</div>
-</footer>
-
-<script>
-  // Scroll reveal
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
-  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
-  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-  // Stagger reveal cards
-  document.querySelectorAll('.features-grid .feature-card, .areas-grid .area-card, .testimonials-grid .testimonial, .pricing-grid .pricing-card').forEach((el, i) => {
-    el.style.transitionDelay = `${i * 0.08}s`;
+/* ─── CHAMADA IA (via proxy seguro ou direta) ─── */
+const askAI=async(system,messages)=>{
+  // Para funcionar no seu site, troque /api/chat pela sua rota de backend
+  // Por enquanto usa a API diretamente (funciona no artifact)
+  const endpoint=window.AI_ENDPOINT||"https://api.anthropic.com/v1/messages";
+  const headers={"Content-Type":"application/json"};
+  if(window.AI_KEY)headers["x-api-key"]=window.AI_KEY;
+  const res=await fetch(endpoint,{
+    method:"POST",headers,
+    body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,system,messages}),
   });
+  const data=await res.json();
+  return data.content?.map(b=>b.text||"").join("")||"Erro na resposta.";
+};
 
-  // Animate bars on load
-  setTimeout(() => {
-    document.querySelectorAll('.bar-fill').forEach(bar => {
-      const w = bar.style.width;
-      bar.style.width = '0%';
-      setTimeout(() => bar.style.width = w, 100);
-    });
-  }, 300);
+/* ─── RING SVG ─── */
+function Ring({value,max=100,size=90,stroke=8,color="#6366f1",label,sublabel}){
+  const r=(size-stroke*2)/2,circ=2*Math.PI*r,fill=(value/max)*circ;
+  return(
+    <div style={{position:"relative",width:size,height:size,flexShrink:0}}>
+      <svg width={size} height={size} style={{position:"absolute"}}>
+        <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="rgba(255,255,255,.07)" strokeWidth={stroke}/>
+        <circle cx={size/2} cy={size/2} r={r} fill="none" stroke={color} strokeWidth={stroke}
+          strokeDasharray={`${fill} ${circ}`} strokeLinecap="round"
+          transform={`rotate(-90 ${size/2} ${size/2})`}
+          style={{transition:"stroke-dasharray .8s cubic-bezier(.4,0,.2,1)",filter:`drop-shadow(0 0 8px ${color}99)`}}/>
+      </svg>
+      <div style={{position:"absolute",inset:0,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center"}}>
+        {label!==undefined&&<span style={{fontSize:size*.22,fontWeight:900,color:"#fff",fontFamily:"'Playfair Display',serif",lineHeight:1}}>{label}</span>}
+        {sublabel&&<span style={{fontSize:size*.1,color:"rgba(255,255,255,.4)",marginTop:2}}>{sublabel}</span>}
+      </div>
+    </div>
+  );
+}
+
+/* ─── SPIDER CHART ─── */
+function Spider({scores}){
+  const W=260,cx=W/2,cy=W/2,R=95,n=PILLARS.length;
+  const pt=(i,v)=>{const a=(i*2*Math.PI/n)-Math.PI/2;return{x:cx+R*(v/10)*Math.cos(a),y:cy+R*(v/10)*Math.sin(a)};};
+  const lp=(i)=>{const a=(i*2*Math.PI/n)-Math.PI/2;return{x:cx+(R+24)*Math.cos(a),y:cy+(R+24)*Math.sin(a)};};
+  const poly=PILLARS.map((p,i)=>pt(i,scores[p.id]||0)).map(p=>`${p.x},${p.y}`).join(" ");
+  const grids=[.25,.5,.75,1].map(f=>PILLARS.map((_,i)=>pt(i,10*f)).map(p=>`${p.x},${p.y}`).join(" "));
+  return(
+    <svg viewBox={`0 0 ${W} ${W}`} style={{width:"100%",maxWidth:W,display:"block",margin:"0 auto"}}>
+      {grids.map((g,i)=><polygon key={i} points={g} fill="none" stroke="rgba(255,255,255,.05)" strokeWidth={1}/>)}
+      {PILLARS.map((_,i)=>{const e=pt(i,10);return <line key={i} x1={cx} y1={cy} x2={e.x} y2={e.y} stroke="rgba(255,255,255,.05)" strokeWidth={1}/>;  })}
+      <polygon points={poly} fill="rgba(99,102,241,.18)" stroke="#818cf8" strokeWidth={2}/>
+      {PILLARS.map((p,i)=>{const pos=pt(i,scores[p.id]||0);return<circle key={i} cx={pos.x} cy={pos.y} r={5} fill={p.color} stroke="#09090f" strokeWidth={2}/>;  })}
+      {PILLARS.map((p,i)=>{const l=lp(i);return<text key={i} x={l.x} y={l.y+4} textAnchor="middle" fontSize={13} fill="rgba(255,255,255,.6)">{p.icon}</text>;})}
+    </svg>
+  );
+}
+
+/* ══════════════════════════════════════════════
+   APP PRINCIPAL
+══════════════════════════════════════════════ */
+function App(){
+  const [state,setState]=useState(INIT);
+  const [tab,setTab]=useState("home");
+  const [loaded,setLoaded]=useState(false);
+  const [devMode,setDevMode]=useState(false);
+  const [showDevLogin,setShowDevLogin]=useState(false);
+  const tapRef=useRef(0);
+
+  useEffect(()=>{
+    const d=loadData();
+    if(d)setState(d);
+    setLoaded(true);
+  },[]);
+
+  const update=useCallback((patch)=>setState(prev=>{
+    const next=typeof patch==="function"?patch(prev):{...prev,...patch};
+    saveData(next);return next;
+  }),[]);
+
+  const psl=calcPSL(state.scores,state.habits,state.goals);
+  const grade=pslGrade(psl);
+
+  const handleSecretTap=()=>{
+    tapRef.current++;
+    if(tapRef.current>=3){tapRef.current=0;setShowDevLogin(true);}
+    setTimeout(()=>{tapRef.current=0;},1000);
+  };
+
+  if(!loaded)return(
+    <div style={{background:"#09090f",minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center"}}>
+      <div style={{fontSize:40,animation:"spin 1.5s linear infinite"}}>✨</div>
+    </div>
+  );
+  if(!state.onboarded)return <Onboarding onDone={name=>update({onboarded:true,name})}/>;
+  if(devMode)return <DevPanel state={state} update={update} onExit={()=>setDevMode(false)}/>;
+  if(showDevLogin)return <DevLogin onSuccess={()=>{setDevMode(true);setShowDevLogin(false);}} onCancel={()=>setShowDevLogin(false)}/>;
+
+  const TABS=[
+    {id:"home",  icon:"🏠",label:"Home"},
+    {id:"areas", icon:"⭕",label:"Áreas"},
+    {id:"study", icon:"📚",label:"Estudos"},
+    {id:"hobbies",icon:"🎨",label:"Hobbies"},
+    {id:"finance",icon:"💰",label:"Finanças"},
+    {id:"habits",icon:"⚡",label:"Hábitos"},
+  ];
+
+  return(
+    <div style={{background:"#09090f",minHeight:"100vh",color:"#fff",paddingBottom:84}}>
+      <style>{`
+        .card{animation:fadeUp .4s ease both}
+        input::placeholder,textarea::placeholder{color:rgba(255,255,255,.3)}
+      `}</style>
+
+      {/* HEADER */}
+      <div style={{padding:"20px 18px 0",display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
+        <div onClick={handleSecretTap} style={{cursor:"default"}}>
+          <div style={{fontSize:11,color:"rgba(255,255,255,.35)",letterSpacing:2,textTransform:"uppercase"}}>
+            {new Date().toLocaleDateString("pt-BR",{weekday:"long",day:"numeric",month:"short"})}
+          </div>
+          <div style={{fontSize:24,fontWeight:900,fontFamily:"'Playfair Display',serif",marginTop:2}}>
+            Olá, {state.name} 👋
+          </div>
+        </div>
+        <div style={{textAlign:"center"}}>
+          <Ring value={psl} max={100} size={64} stroke={6} color={grade.color} label={psl}/>
+          <div style={{fontSize:9,color:grade.color,fontWeight:800,letterSpacing:1,marginTop:2}}>{grade.label}</div>
+        </div>
+      </div>
+
+      {/* TABS TOPO */}
+      <div style={{display:"flex",gap:6,padding:"14px 18px 0",overflowX:"auto",scrollbarWidth:"none"}}>
+        {TABS.map(t=>(
+          <button key={t.id} onClick={()=>setTab(t.id)} style={{
+            padding:"7px 14px",borderRadius:50,border:"none",whiteSpace:"nowrap",fontSize:12,fontWeight:600,transition:"all .2s",
+            background:tab===t.id?"linear-gradient(135deg,#6366f1,#8b5cf6)":"rgba(255,255,255,.07)",
+            color:tab===t.id?"#fff":"rgba(255,255,255,.4)",
+          }}>{t.icon} {t.label}</button>
+        ))}
+      </div>
+
+      {/* CONTEÚDO */}
+      <div style={{padding:"18px 18px 0"}}>
+        {tab==="home"    &&<HomeTab    state={state} update={update} psl={psl} grade={grade}/>}
+        {tab==="areas"   &&<AreasTab   state={state} update={update}/>}
+        {tab==="study"   &&<StudyTab/>}
+        {tab==="hobbies" &&<HobbiesTab/>}
+        {tab==="finance" &&<FinanceTab state={state} update={update}/>}
+        {tab==="habits"  &&<HabitsTab  state={state} update={update}/>}
+      </div>
+
+      {/* BOTTOM NAV */}
+      <div style={{position:"fixed",bottom:0,left:0,right:0,background:"rgba(9,9,15,.97)",backdropFilter:"blur(20px)",borderTop:"1px solid rgba(255,255,255,.08)",display:"flex",justifyContent:"space-around",padding:"8px 0 18px"}}>
+        {TABS.map(t=>(
+          <button key={t.id} onClick={()=>setTab(t.id)} style={{background:"none",border:"none",display:"flex",flexDirection:"column",alignItems:"center",gap:2,padding:"4px 8px"}}>
+            <span style={{fontSize:20,filter:tab===t.id?"none":"grayscale(1) opacity(.4)"}}>{t.icon}</span>
+            <span style={{fontSize:9,color:tab===t.id?"#a5b4fc":"rgba(255,255,255,.25)",fontWeight:tab===t.id?700:400}}>{t.label}</span>
+          </button>
+        ))}
+      </div>
+
+      <CoachFloat state={state}/>
+    </div>
+  );
+}
+
+/* ─── ONBOARDING ─── */
+function Onboarding({onDone}){
+  const [step,setStep]=useState(0);
+  const [name,setName]=useState("");
+  const slides=[
+    {emoji:"✨",title:"Vida Total",sub:"O app com IA que transforma todas as áreas da sua vida"},
+    {emoji:"📊",title:"PSL Score",sub:"Seu índice pessoal de 0 a 100 — mede seu crescimento em tempo real"},
+    {emoji:"📚",title:"IA para Estudos",sub:"Cole conteúdo da faculdade e receba explicações, resumos e flashcards"},
+    {emoji:"🎨",title:"Descubra Hobbies",sub:"A IA encontra hobbies perfeitos para o seu perfil e ensina a começar"},
+    {emoji:"🤖",title:"Coach Pessoal",sub:"Seu assistente de vida disponível 24h com contexto dos seus dados reais"},
+  ];
+  return(
+    <div style={{background:"linear-gradient(160deg,#09090f,#1a0b2e)",minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:32,color:"#fff"}}>
+      <div key={step} style={{textAlign:"center",maxWidth:320,animation:"fadeUp .4s ease"}}>
+        <div style={{fontSize:80,marginBottom:28}}>{slides[step].emoji}</div>
+        <h1 style={{fontSize:34,fontWeight:900,fontFamily:"'Playfair Display',serif",marginBottom:16,background:"linear-gradient(135deg,#fff,#a5b4fc)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>{slides[step].title}</h1>
+        <p style={{color:"rgba(255,255,255,.55)",fontSize:16,lineHeight:1.7,marginBottom:40}}>{slides[step].sub}</p>
+        {step<slides.length-1?(
+          <button onClick={()=>setStep(s=>s+1)} style={{padding:"16px 48px",borderRadius:50,background:"linear-gradient(135deg,#6366f1,#8b5cf6)",border:"none",color:"#fff",fontSize:16,fontWeight:700,boxShadow:"0 8px 32px rgba(99,102,241,.4)"}}>
+            Próximo →
+          </button>
+        ):(
+          <div style={{display:"flex",flexDirection:"column",gap:14}}>
+            <p style={{color:"rgba(255,255,255,.5)",fontSize:14}}>Como você quer ser chamado?</p>
+            <input value={name} onChange={e=>setName(e.target.value)} onKeyDown={e=>e.key==="Enter"&&name.trim()&&onDone(name.trim())} placeholder="Seu nome..." style={{background:"rgba(255,255,255,.1)",border:"1px solid rgba(255,255,255,.2)",borderRadius:14,padding:"14px 18px",color:"#fff",fontSize:16,textAlign:"center"}}/>
+            <button onClick={()=>name.trim()&&onDone(name.trim())} style={{padding:16,borderRadius:50,background:name.trim()?"linear-gradient(135deg,#6366f1,#8b5cf6)":"rgba(255,255,255,.1)",border:"none",color:"#fff",fontSize:16,fontWeight:700,transition:"all .3s"}}>
+              Começar minha jornada 🚀
+            </button>
+          </div>
+        )}
+        <div style={{display:"flex",gap:8,justifyContent:"center",marginTop:36}}>
+          {slides.map((_,i)=><div key={i} style={{width:i===step?24:8,height:8,borderRadius:4,background:i===step?"#6366f1":"rgba(255,255,255,.15)",transition:"all .3s"}}/>)}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── HOME TAB ─── */
+function HomeTab({state,update,psl,grade}){
+  const todayH=(state.habits||[]).filter(h=>h.completedDates?.includes(today())).length;
+  const doneG=(state.goals||[]).filter(g=>g.done).length;
+  const sorted=PILLARS.slice().sort((a,b)=>(state.scores[a.id]||0)-(state.scores[b.id]||0));
+  const weakest=sorted[0],strongest=sorted[sorted.length-1];
+  return(
+    <div style={{display:"flex",flexDirection:"column",gap:16}}>
+      {/* PSL CARD */}
+      <div className="card" style={{background:"linear-gradient(135deg,rgba(99,102,241,.15),rgba(139,92,246,.15))",border:"1px solid rgba(99,102,241,.3)",borderRadius:22,padding:20,display:"flex",gap:18,alignItems:"center",animation:"glow 3s ease infinite"}}>
+        <Ring value={psl} max={100} size={100} stroke={9} color={grade.color} label={psl} sublabel="/100"/>
+        <div style={{flex:1}}>
+          <div style={{fontSize:10,color:"rgba(255,255,255,.4)",letterSpacing:3,marginBottom:4}}>PSL SCORE — PERSONAL SUCCESS LEVEL</div>
+          <div style={{fontSize:26,fontWeight:900,color:grade.color,fontFamily:"'Playfair Display',serif"}}>{grade.label}</div>
+          <div style={{fontSize:12,color:"rgba(255,255,255,.4)",marginTop:6,lineHeight:1.5}}>Calculado com 8 áreas da vida, hábitos e metas</div>
+          <div style={{height:4,background:"rgba(255,255,255,.08)",borderRadius:2,marginTop:10}}>
+            <div style={{height:"100%",width:`${psl}%`,background:`linear-gradient(90deg,${grade.color},${grade.color}88)`,borderRadius:2,transition:"width .8s"}}/>
+          </div>
+        </div>
+      </div>
+
+      {/* SPIDER */}
+      <div className="card" style={{background:"rgba(255,255,255,.04)",border:"1px solid rgba(255,255,255,.08)",borderRadius:22,padding:18}}>
+        <div style={{fontSize:13,fontWeight:700,color:"rgba(255,255,255,.6)",marginBottom:12}}>🗺️ Mapa da Vida</div>
+        <Spider scores={state.scores}/>
+      </div>
+
+      {/* STATS RÁPIDOS */}
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
+        {[
+          {icon:"⚡",label:"Hábitos Hoje",value:`${todayH}/${(state.habits||[]).length}`,color:"#fbbf24"},
+          {icon:"🎯",label:"Metas Feitas",value:`${doneG}/${(state.goals||[]).length}`,color:"#4ade80"},
+          {icon:"💪",label:"Ponto Forte",value:strongest.label,color:strongest.color},
+          {icon:"🔦",label:"Foco Agora",value:weakest.label,color:weakest.color},
+        ].map((s,i)=>(
+          <div key={i} className="card" style={{background:"rgba(255,255,255,.04)",border:`1px solid ${s.color}22`,borderRadius:16,padding:14,animationDelay:`${i*.08}s`}}>
+            <div style={{fontSize:22,marginBottom:6}}>{s.icon}</div>
+            <div style={{fontSize:10,color:"rgba(255,255,255,.35)",marginBottom:4}}>{s.label}</div>
+            <div style={{fontSize:14,fontWeight:800,color:s.color}}>{s.value}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* BARRAS */}
+      <div className="card" style={{background:"rgba(255,255,255,.03)",border:"1px solid rgba(255,255,255,.07)",borderRadius:22,padding:18}}>
+        <div style={{fontSize:13,fontWeight:700,color:"rgba(255,255,255,.6)",marginBottom:14}}>📊 Todas as Áreas</div>
+        {PILLARS.map(p=>{
+          const s=state.scores[p.id]||0;
+          return(
+            <div key={p.id} style={{display:"flex",alignItems:"center",gap:10,marginBottom:12}}>
+              <span style={{fontSize:16,width:22}}>{p.icon}</span>
+              <div style={{flex:1}}>
+                <div style={{display:"flex",justifyContent:"space-between",marginBottom:5}}>
+                  <span style={{fontSize:11,color:"rgba(255,255,255,.55)"}}>{p.label}</span>
+                  <span style={{fontSize:11,fontWeight:800,color:scoreColor(s)}}>{s}/10</span>
+                </div>
+                <div style={{height:5,background:"rgba(255,255,255,.06)",borderRadius:3}}>
+                  <div style={{height:"100%",width:`${s*10}%`,background:p.color,borderRadius:3,transition:"width .8s",boxShadow:`0 0 8px ${p.color}66`}}/>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+/* ─── AREAS TAB ─── */
+function AreasTab({state,update}){
+  const [open,setOpen]=useState(null);
+  return(
+    <div style={{display:"flex",flexDirection:"column",gap:12}}>
+      <p style={{color:"rgba(255,255,255,.35)",fontSize:12,margin:0}}>Avalie cada dimensão da sua vida de 1 a 10</p>
+      {PILLARS.map((p,idx)=>{
+        const s=state.scores[p.id]||0,isOpen=open===p.id;
+        return(
+          <div key={p.id} className="card" style={{background:"rgba(255,255,255,.04)",border:`1px solid ${isOpen?p.color+"55":"rgba(255,255,255,.07)"}`,borderRadius:18,overflow:"hidden",transition:"border .3s",animationDelay:`${idx*.06}s`}}>
+            <div onClick={()=>setOpen(isOpen?null:p.id)} style={{padding:"14px 16px",display:"flex",alignItems:"center",gap:14,cursor:"pointer"}}>
+              <Ring value={s} max={10} size={54} stroke={6} color={p.color} label={s}/>
+              <div style={{flex:1}}>
+                <div style={{fontSize:15,fontWeight:700}}>{p.icon} {p.label}</div>
+                <div style={{fontSize:11,color:"rgba(255,255,255,.35)",marginTop:3}}>{s<4?"⚠️ Atenção urgente":s<6?"📈 Pode melhorar":s<8?"✅ Bom ritmo":"🔥 Excelente!"}</div>
+              </div>
+              <span style={{color:"rgba(255,255,255,.25)",transform:isOpen?"rotate(90deg)":"none",transition:"transform .3s",fontSize:22}}>›</span>
+            </div>
+            {isOpen&&(
+              <div style={{padding:"0 16px 18px"}}>
+                <div style={{fontSize:12,color:"rgba(255,255,255,.4)",marginBottom:10}}>Selecione sua nota:</div>
+                <div style={{display:"grid",gridTemplateColumns:"repeat(10,1fr)",gap:5}}>
+                  {[1,2,3,4,5,6,7,8,9,10].map(n=>(
+                    <button key={n} onClick={()=>update(prev=>({...prev,scores:{...prev.scores,[p.id]:n}}))} style={{height:36,borderRadius:8,border:"none",fontSize:12,fontWeight:700,transition:"all .15s",background:n<=s?p.color:"rgba(255,255,255,.08)",color:n<=s?"#000":"rgba(255,255,255,.4)",transform:n===s?"scale(1.15)":"scale(1)"}}>{n}</button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+/* ─── STUDY TAB ─── */
+function StudyTab(){
+  const [mode,setMode]=useState("home");
+  const [input,setInput]=useState("");
+  const [course,setCourse]=useState("");
+  const [result,setResult]=useState("");
+  const [loading,setLoading]=useState(false);
+  const [cards,setCards]=useState([]);
+  const [cardIdx,setCardIdx]=useState(0);
+  const [cardFlip,setCardFlip]=useState(false);
+
+  const run=async(system)=>{
+    setLoading(true);setResult("");
+    try{const r=await askAI(system,[{role:"user",content:`Matéria: ${course||"não informada"}\n\nConteúdo:\n${input}`}]);setResult(r);}
+    catch{setResult("❌ Erro. Verifique a conexão.");}
+    setLoading(false);
+  };
+  const genCards=async()=>{
+    setLoading(true);
+    try{
+      const r=await askAI("Gere exatamente 5 flashcards em JSON puro sem markdown: [{\"front\":\"pergunta\",\"back\":\"resposta\"}]",[{role:"user",content:input}]);
+      const clean=r.replace(/```json|```/g,"").trim();
+      setCards(JSON.parse(clean));setCardIdx(0);setCardFlip(false);setMode("flashcard");
+    }catch{alert("Erro ao gerar flashcards");}
+    setLoading(false);
+  };
+  const SYS={
+    explain:"Você é um professor universitário brilhante. Explique o conteúdo de forma clara, com exemplos práticos e analogias. Use emojis e subtítulos. Responda em português.",
+    quiz:"Crie 5 questões de múltipla escolha (A,B,C,D) com gabarito comentado. Português.",
+    summary:"Faça um resumo ultra-organizado: conceitos-chave em bullets, destaques importantes, exemplos. Use emojis. Português.",
+  };
+  const TOOLS=[
+    {id:"explain",icon:"📖",title:"Explicar Conteúdo",sub:"A IA explica qualquer texto de forma simples",color:"#38bdf8"},
+    {id:"quiz",icon:"📝",title:"Gerar Questões",sub:"Simulados e provas com gabarito comentado",color:"#a78bfa"},
+    {id:"summary",icon:"📋",title:"Resumo Inteligente",sub:"Resumo com bullet points e conceitos-chave",color:"#4ade80"},
+    {id:"fc_pre",icon:"🃏",title:"Flashcards IA",sub:"Cartões de memorização gerados automaticamente",color:"#fbbf24"},
+  ];
+
+  if(mode==="flashcard"&&cards.length>0)return(
+    <div style={{display:"flex",flexDirection:"column",gap:16}}>
+      <button onClick={()=>setMode("home")} style={{background:"rgba(255,255,255,.07)",border:"none",color:"rgba(255,255,255,.6)",padding:"8px 16px",borderRadius:10,fontSize:13,alignSelf:"flex-start"}}>← Voltar</button>
+      <div style={{fontSize:13,color:"rgba(255,255,255,.4)",textAlign:"center"}}>📚 {cardIdx+1} / {cards.length}</div>
+      <div onClick={()=>setCardFlip(f=>!f)} style={{background:cardFlip?"rgba(74,222,128,.12)":"rgba(99,102,241,.12)",border:`2px solid ${cardFlip?"#4ade8055":"#6366f155"}`,borderRadius:22,padding:36,minHeight:200,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",transition:"all .4s"}}>
+        <div style={{textAlign:"center"}}>
+          <div style={{fontSize:10,color:"rgba(255,255,255,.3)",marginBottom:14,letterSpacing:3}}>{cardFlip?"✅ RESPOSTA":"❓ PERGUNTA — toque para revelar"}</div>
+          <div style={{fontSize:17,fontWeight:600,lineHeight:1.7}}>{cardFlip?cards[cardIdx].back:cards[cardIdx].front}</div>
+        </div>
+      </div>
+      <div style={{display:"flex",gap:10}}>
+        <button onClick={()=>{setCardIdx(i=>Math.max(0,i-1));setCardFlip(false);}} style={{flex:1,padding:12,background:"rgba(255,255,255,.07)",border:"none",color:"#fff",borderRadius:12}}>← Anterior</button>
+        <button onClick={()=>{setCardIdx(i=>Math.min(cards.length-1,i+1));setCardFlip(false);}} style={{flex:1,padding:12,background:"linear-gradient(135deg,#6366f1,#8b5cf6)",border:"none",color:"#fff",borderRadius:12,fontWeight:700}}>Próximo →</button>
+      </div>
+    </div>
+  );
+
+  if(mode==="fc_pre")return(
+    <div style={{display:"flex",flexDirection:"column",gap:14}}>
+      <button onClick={()=>setMode("home")} style={{background:"rgba(255,255,255,.07)",border:"none",color:"rgba(255,255,255,.6)",padding:"8px 16px",borderRadius:10,fontSize:13,alignSelf:"flex-start"}}>← Voltar</button>
+      <div style={{fontSize:16,fontWeight:700}}>🃏 Gerar Flashcards</div>
+      <textarea value={input} onChange={e=>setInput(e.target.value)} placeholder="Cole o conteúdo aqui..." rows={5} style={{background:"rgba(255,255,255,.06)",border:"1px solid rgba(255,255,255,.1)",borderRadius:14,padding:14,color:"#fff",fontSize:13,resize:"none"}}/>
+      <button onClick={genCards} disabled={!input.trim()||loading} style={{padding:14,background:loading?"rgba(255,255,255,.1)":"linear-gradient(135deg,#fbbf24,#f97316)",border:"none",color:"#000",borderRadius:14,fontSize:15,fontWeight:700}}>
+        {loading?"⏳ Gerando...":"🃏 Criar Flashcards"}
+      </button>
+    </div>
+  );
+
+  if(mode!=="home")return(
+    <div style={{display:"flex",flexDirection:"column",gap:14}}>
+      <button onClick={()=>{setMode("home");setResult("");}} style={{background:"rgba(255,255,255,.07)",border:"none",color:"rgba(255,255,255,.6)",padding:"8px 16px",borderRadius:10,fontSize:13,alignSelf:"flex-start"}}>← Voltar</button>
+      <div style={{fontSize:16,fontWeight:700}}>{TOOLS.find(t=>t.id===mode)?.icon} {TOOLS.find(t=>t.id===mode)?.title}</div>
+      <textarea value={input} onChange={e=>setInput(e.target.value)} placeholder="Cole aqui o conteúdo da aula, capítulo ou anotações..." rows={5} style={{background:"rgba(255,255,255,.06)",border:"1px solid rgba(255,255,255,.1)",borderRadius:14,padding:14,color:"#fff",fontSize:13,resize:"none",lineHeight:1.6}}/>
+      <input value={course} onChange={e=>setCourse(e.target.value)} placeholder="Matéria / Curso (ex: Cálculo 2, Direito Civil...)" style={{background:"rgba(255,255,255,.06)",border:"1px solid rgba(255,255,255,.1)",borderRadius:12,padding:"10px 14px",color:"#fff",fontSize:13}}/>
+      <button onClick={()=>run(SYS[mode])} disabled={!input.trim()||loading} style={{padding:14,background:loading?"rgba(255,255,255,.1)":"linear-gradient(135deg,#6366f1,#8b5cf6)",border:"none",color:"#fff",borderRadius:14,fontSize:15,fontWeight:700}}>
+        {loading?"⏳ Processando...":"✨ Gerar com IA"}
+      </button>
+      {result&&<div style={{background:"rgba(255,255,255,.04)",border:"1px solid rgba(255,255,255,.08)",borderRadius:16,padding:18,fontSize:13,lineHeight:1.8,whiteSpace:"pre-wrap",color:"rgba(255,255,255,.85)"}}>{result}</div>}
+    </div>
+  );
+
+  return(
+    <div style={{display:"flex",flexDirection:"column",gap:14}}>
+      <p style={{color:"rgba(255,255,255,.35)",fontSize:12,margin:0}}>Ferramentas de IA para seus estudos universitários</p>
+      {TOOLS.map((item,i)=>(
+        <div key={item.id} className="card" onClick={()=>setMode(item.id)} style={{background:"rgba(255,255,255,.04)",border:`1px solid ${item.color}22`,borderRadius:18,padding:18,display:"flex",gap:14,alignItems:"center",cursor:"pointer",animationDelay:`${i*.08}s`}}>
+          <div style={{fontSize:32,width:54,height:54,background:`${item.color}18`,borderRadius:14,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{item.icon}</div>
+          <div style={{flex:1}}>
+            <div style={{fontSize:15,fontWeight:700}}>{item.title}</div>
+            <div style={{fontSize:12,color:"rgba(255,255,255,.4)",marginTop:3}}>{item.sub}</div>
+          </div>
+          <span style={{color:item.color,fontSize:22}}>›</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/* ─── HOBBIES TAB ─── */
+function HobbiesTab(){
+  const [mode,setMode]=useState("home");
+  const [ans,setAns]=useState({time:"",budget:"",personality:"",interests:""});
+  const [searchQ,setSearchQ]=useState("");
+  const [result,setResult]=useState("");
+  const [loading,setLoading]=useState(false);
+  const POPULAR=["🎸 Guitarra","📸 Fotografia","🧘 Yoga","♟️ Xadrez","🎨 Pintura","🏃 Corrida","🌱 Jardinagem","💻 Programação","🍳 Culinária","📚 Leitura","🎮 Games","🎭 Teatro"];
+
+  const findHobbies=async()=>{
+    setLoading(true);setResult("");
+    try{const r=await askAI("Especialista em desenvolvimento pessoal. Com base no perfil, sugira 5 hobbies perfeitos: por que é ideal, como começar passo a passo, custo inicial, recursos gratuitos. Use emojis. Português.",[{role:"user",content:`Tempo: ${ans.time} | Orçamento: ${ans.budget} | Personalidade: ${ans.personality} | Interesses: ${ans.interests}`}]);setResult(r);setMode("result");}
+    catch{setResult("❌ Erro.");setMode("result");}
+    setLoading(false);
+  };
+  const searchHobby=async()=>{
+    setLoading(true);setResult("");
+    try{const r=await askAI("Guia especialista de hobbies. Dê guia COMPLETO: o que é, por que vale a pena, primeiros passos, materiais, custo, comunidades, apps para aprender. Use emojis. Português.",[{role:"user",content:`Hobby: ${searchQ}`}]);setResult(r);setMode("result");}
+    catch{setResult("❌ Erro.");setMode("result");}
+    setLoading(false);
+  };
+
+  if(mode==="result")return(
+    <div style={{display:"flex",flexDirection:"column",gap:14}}>
+      <button onClick={()=>{setMode("home");setResult("");}} style={{background:"rgba(255,255,255,.07)",border:"none",color:"rgba(255,255,255,.6)",padding:"8px 16px",borderRadius:10,fontSize:13,alignSelf:"flex-start"}}>← Voltar</button>
+      <div style={{background:"rgba(52,211,153,.06)",border:"1px solid rgba(52,211,153,.2)",borderRadius:18,padding:18,fontSize:13,lineHeight:1.8,whiteSpace:"pre-wrap",color:"rgba(255,255,255,.85)"}}>{result}</div>
+    </div>
+  );
+  if(mode==="finder")return(
+    <div style={{display:"flex",flexDirection:"column",gap:14}}>
+      <button onClick={()=>setMode("home")} style={{background:"rgba(255,255,255,.07)",border:"none",color:"rgba(255,255,255,.6)",padding:"8px 16px",borderRadius:10,fontSize:13,alignSelf:"flex-start"}}>← Voltar</button>
+      <div style={{fontSize:16,fontWeight:700}}>🔍 Encontrar Hobby Ideal</div>
+      {[
+        {k:"time",l:"⏱ Tempo disponível por dia?",ph:"Ex: 30 min, 1h, fins de semana..."},
+        {k:"budget",l:"💰 Orçamento mensal para hobby?",ph:"Ex: R$0, R$50, R$200..."},
+        {k:"personality",l:"🧠 Como você se descreve?",ph:"Ex: introvertido, ativo, criativo..."},
+        {k:"interests",l:"❤️ O que você já gosta?",ph:"Ex: tecnologia, natureza, música..."},
+      ].map(q=>(
+        <div key={q.k}>
+          <div style={{fontSize:12,color:"rgba(255,255,255,.5)",marginBottom:6}}>{q.l}</div>
+          <input value={ans[q.k]} onChange={e=>setAns(a=>({...a,[q.k]:e.target.value}))} placeholder={q.ph} style={{width:"100%",background:"rgba(255,255,255,.06)",border:"1px solid rgba(255,255,255,.1)",borderRadius:12,padding:"10px 14px",color:"#fff",fontSize:13}}/>
+        </div>
+      ))}
+      <button onClick={findHobbies} disabled={loading} style={{padding:14,background:loading?"rgba(255,255,255,.1)":"linear-gradient(135deg,#34d399,#10b981)",border:"none",color:"#000",borderRadius:14,fontSize:15,fontWeight:700}}>
+        {loading?"⏳ Buscando...":"🎨 Encontrar Hobbies Perfeitos"}
+      </button>
+    </div>
+  );
+  if(mode==="search")return(
+    <div style={{display:"flex",flexDirection:"column",gap:14}}>
+      <button onClick={()=>setMode("home")} style={{background:"rgba(255,255,255,.07)",border:"none",color:"rgba(255,255,255,.6)",padding:"8px 16px",borderRadius:10,fontSize:13,alignSelf:"flex-start"}}>← Voltar</button>
+      <div style={{fontSize:16,fontWeight:700}}>🔎 Explorar Hobby</div>
+      <input value={searchQ} onChange={e=>setSearchQ(e.target.value)} onKeyDown={e=>e.key==="Enter"&&searchQ.trim()&&searchHobby()} placeholder="Ex: fotografia, xadrez, skate..." style={{background:"rgba(255,255,255,.06)",border:"1px solid rgba(255,255,255,.1)",borderRadius:12,padding:"12px 16px",color:"#fff",fontSize:15}}/>
+      <button onClick={searchHobby} disabled={!searchQ.trim()||loading} style={{padding:14,background:loading?"rgba(255,255,255,.1)":"linear-gradient(135deg,#38bdf8,#6366f1)",border:"none",color:"#fff",borderRadius:14,fontSize:15,fontWeight:700}}>
+        {loading?"⏳ Pesquisando...":"🔎 Ver Guia Completo"}
+      </button>
+      <div style={{fontSize:12,color:"rgba(255,255,255,.35)"}}>Ou escolha um popular:</div>
+      <div style={{display:"flex",flexWrap:"wrap",gap:8}}>
+        {POPULAR.map(h=>(
+          <button key={h} onClick={()=>setSearchQ(h.split(" ").slice(1).join(" "))} style={{padding:"6px 12px",background:"rgba(255,255,255,.06)",border:"none",borderRadius:20,color:"rgba(255,255,255,.6)",fontSize:11}}>{h}</button>
+        ))}
+      </div>
+    </div>
+  );
+  return(
+    <div style={{display:"flex",flexDirection:"column",gap:14}}>
+      <p style={{color:"rgba(255,255,255,.35)",fontSize:12,margin:0}}>Descubra e explore novos hobbies com IA</p>
+      {[
+        {id:"finder",icon:"🔍",title:"Encontrar meu Hobby Ideal",sub:"A IA analisa seu perfil e sugere os hobbies perfeitos",color:"#34d399"},
+        {id:"search",icon:"📖",title:"Explorar Hobby Específico",sub:"Pesquise qualquer hobby e receba um guia completo",color:"#38bdf8"},
+      ].map((item,i)=>(
+        <div key={item.id} className="card" onClick={()=>setMode(item.id)} style={{background:"rgba(255,255,255,.04)",border:`1px solid ${item.color}22`,borderRadius:18,padding:20,display:"flex",gap:14,alignItems:"center",cursor:"pointer",animationDelay:`${i*.1}s`}}>
+          <div style={{fontSize:36,width:60,height:60,background:`${item.color}18`,borderRadius:16,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{item.icon}</div>
+          <div style={{flex:1}}>
+            <div style={{fontSize:15,fontWeight:700}}>{item.title}</div>
+            <div style={{fontSize:12,color:"rgba(255,255,255,.4)",marginTop:4,lineHeight:1.5}}>{item.sub}</div>
+          </div>
+          <span style={{color:item.color,fontSize:22}}>›</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/* ─── FINANCE TAB ─── */
+function FinanceTab({state,update}){
+  const [showAdd,setShowAdd]=useState(false);
+  const [newExp,setNewExp]=useState({label:"",amount:"",category:"Alimentação"});
+  const [aiQ,setAiQ]=useState("");
+  const [aiR,setAiR]=useState("");
+  const [aiLoading,setAiLoading]=useState(false);
+  const CATS=["Alimentação","Moradia","Transporte","Saúde","Lazer","Educação","Assinaturas","Outros"];
+  const expenses=state.finance?.expenses||[];
+  const income=Number(state.finance?.income)||0;
+  const totalExp=expenses.reduce((s,e)=>s+Number(e.amount),0);
+  const balance=income-totalExp;
+  const savings=income>0?Math.round((balance/income)*100):0;
+
+  const addExpense=()=>{
+    if(!newExp.label||!newExp.amount)return;
+    update(prev=>({...prev,finance:{...prev.finance,expenses:[...(prev.finance?.expenses||[]),{...newExp,id:Date.now(),date:today()}]}}));
+    setNewExp({label:"",amount:"",category:"Alimentação"});setShowAdd(false);
+  };
+  const askFinance=async()=>{
+    setAiLoading(true);
+    try{const r=await askAI("Consultor financeiro pessoal. Dê conselhos práticos e motivadores. Use emojis. Português.",[{role:"user",content:`Renda: R$${income} | Gastos: R$${totalExp.toFixed(2)} | Saldo: R$${balance.toFixed(2)} | Poupança: ${savings}%\n\nPergunta: ${aiQ}`}]);setAiR(r);}
+    catch{setAiR("❌ Erro.");}
+    setAiLoading(false);
+  };
+
+  return(
+    <div style={{display:"flex",flexDirection:"column",gap:16}}>
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:10}}>
+        {[{l:"Renda",v:`R$${income.toFixed(0)}`,c:"#4ade80"},{l:"Gastos",v:`R$${totalExp.toFixed(0)}`,c:"#f87171"},{l:"Saldo",v:`R$${balance.toFixed(0)}`,c:balance>=0?"#4ade80":"#f87171"}].map(s=>(
+          <div key={s.l} className="card" style={{background:"rgba(255,255,255,.04)",border:`1px solid ${s.c}22`,borderRadius:14,padding:12,textAlign:"center"}}>
+            <div style={{fontSize:10,color:"rgba(255,255,255,.35)",marginBottom:4}}>{s.l}</div>
+            <div style={{fontSize:16,fontWeight:800,color:s.c}}>{s.v}</div>
+          </div>
+        ))}
+      </div>
+      <div className="card" style={{background:"rgba(255,255,255,.04)",border:"1px solid rgba(255,255,255,.08)",borderRadius:16,padding:16}}>
+        <div style={{display:"flex",justifyContent:"space-between",marginBottom:8}}>
+          <span style={{fontSize:13,color:"rgba(255,255,255,.5)"}}>💰 Taxa de Poupança</span>
+          <span style={{fontSize:13,fontWeight:700,color:savings>=20?"#4ade80":savings>=10?"#fbbf24":"#f87171"}}>{savings}%</span>
+        </div>
+        <div style={{height:8,background:"rgba(255,255,255,.06)",borderRadius:4}}>
+          <div style={{height:"100%",width:`${Math.max(0,Math.min(savings,100))}%`,background:savings>=20?"#4ade80":savings>=10?"#fbbf24":"#f87171",borderRadius:4,transition:"width .8s"}}/>
+        </div>
+        <div style={{fontSize:11,color:"rgba(255,255,255,.3)",marginTop:6}}>Meta: ≥ 20% da renda</div>
+      </div>
+      <div className="card" style={{background:"rgba(255,255,255,.04)",border:"1px solid rgba(255,255,255,.08)",borderRadius:14,padding:14,display:"flex",gap:10,alignItems:"center"}}>
+        <span style={{fontSize:13,color:"rgba(255,255,255,.5)",whiteSpace:"nowrap"}}>Renda R$:</span>
+        <input type="number" value={state.finance?.income||""} onChange={e=>update(prev=>({...prev,finance:{...prev.finance,income:e.target.value}}))} placeholder="0" style={{flex:1,background:"rgba(255,255,255,.07)",border:"1px solid rgba(255,255,255,.1)",borderRadius:10,padding:"8px 12px",color:"#fff",fontSize:14}}/>
+      </div>
+      <div className="card" style={{background:"rgba(255,255,255,.03)",border:"1px solid rgba(255,255,255,.07)",borderRadius:18,padding:16}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
+          <div style={{fontSize:13,fontWeight:700,color:"rgba(255,255,255,.6)"}}>🧾 Gastos</div>
+          <button onClick={()=>setShowAdd(true)} style={{padding:"6px 14px",background:"linear-gradient(135deg,#6366f1,#8b5cf6)",border:"none",color:"#fff",borderRadius:20,fontSize:12,fontWeight:600}}>+ Adicionar</button>
+        </div>
+        {expenses.length===0&&<div style={{color:"rgba(255,255,255,.25)",fontSize:13,textAlign:"center",padding:"16px 0"}}>Nenhum gasto registrado</div>}
+        {expenses.slice(-8).reverse().map(e=>(
+          <div key={e.id} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"9px 0",borderBottom:"1px solid rgba(255,255,255,.05)"}}>
+            <div><div style={{fontSize:13}}>{e.label}</div><div style={{fontSize:10,color:"rgba(255,255,255,.3)"}}>{e.category} · {e.date}</div></div>
+            <div style={{display:"flex",alignItems:"center",gap:10}}>
+              <span style={{fontSize:14,fontWeight:700,color:"#f87171"}}>-R${Number(e.amount).toFixed(2)}</span>
+              <button onClick={()=>update(prev=>({...prev,finance:{...prev.finance,expenses:prev.finance.expenses.filter(x=>x.id!==e.id)}}))} style={{background:"none",border:"none",color:"rgba(255,255,255,.2)",fontSize:18}}>×</button>
+            </div>
+          </div>
+        ))}
+        {showAdd&&(
+          <div style={{marginTop:14,padding:14,background:"rgba(255,255,255,.04)",borderRadius:14,display:"flex",flexDirection:"column",gap:8}}>
+            <input value={newExp.label} onChange={e=>setNewExp(p=>({...p,label:e.target.value}))} placeholder="Descrição..." style={{background:"rgba(255,255,255,.07)",border:"1px solid rgba(255,255,255,.1)",borderRadius:10,padding:"8px 12px",color:"#fff",fontSize:13}}/>
+            <input type="number" value={newExp.amount} onChange={e=>setNewExp(p=>({...p,amount:e.target.value}))} placeholder="Valor R$..." style={{background:"rgba(255,255,255,.07)",border:"1px solid rgba(255,255,255,.1)",borderRadius:10,padding:"8px 12px",color:"#fff",fontSize:13}}/>
+            <select value={newExp.category} onChange={e=>setNewExp(p=>({...p,category:e.target.value}))} style={{background:"#1a1a2e",border:"1px solid rgba(255,255,255,.1)",borderRadius:10,padding:"8px 12px",color:"#fff",fontSize:13}}>
+              {CATS.map(c=><option key={c}>{c}</option>)}
+            </select>
+            <div style={{display:"flex",gap:8}}>
+              <button onClick={()=>setShowAdd(false)} style={{flex:1,padding:10,background:"rgba(255,255,255,.07)",border:"none",color:"#fff",borderRadius:10}}>Cancelar</button>
+              <button onClick={addExpense} style={{flex:1,padding:10,background:"linear-gradient(135deg,#6366f1,#8b5cf6)",border:"none",color:"#fff",borderRadius:10,fontWeight:700}}>Salvar</button>
+            </div>
+          </div>
+        )}
+      </div>
+      <div className="card" style={{background:"rgba(74,222,128,.05)",border:"1px solid rgba(74,222,128,.2)",borderRadius:18,padding:16}}>
+        <div style={{fontSize:13,fontWeight:700,marginBottom:10}}>🤖 Consultor Financeiro IA</div>
+        <input value={aiQ} onChange={e=>setAiQ(e.target.value)} onKeyDown={e=>e.key==="Enter"&&aiQ.trim()&&askFinance()} placeholder="Como posso economizar mais?" style={{width:"100%",background:"rgba(255,255,255,.06)",border:"1px solid rgba(255,255,255,.1)",borderRadius:10,padding:"10px 14px",color:"#fff",fontSize:13,marginBottom:8}}/>
+        <button onClick={askFinance} disabled={!aiQ.trim()||aiLoading} style={{width:"100%",padding:10,background:aiLoading?"rgba(255,255,255,.1)":"linear-gradient(135deg,#4ade80,#10b981)",border:"none",color:"#000",borderRadius:10,fontWeight:700,fontSize:13}}>
+          {aiLoading?"⏳ Analisando...":"💡 Pedir Conselho"}
+        </button>
+        {aiR&&<div style={{marginTop:12,fontSize:13,lineHeight:1.7,whiteSpace:"pre-wrap",color:"rgba(255,255,255,.8)"}}>{aiR}</div>}
+      </div>
+    </div>
+  );
+}
+
+/* ─── HABITS TAB ─── */
+function HabitsTab({state,update}){
+  const [newH,setNewH]=useState("");
+  const [newIcon,setNewIcon]=useState("⚡");
+  const ICONS=["⚡","💧","📚","🏃","🧘","😴","🥗","💊","📝","🎯","💪","🌅","🧠","❤️","🎨","🚶"];
+  const toggle=id=>update(prev=>({...prev,habits:prev.habits.map(h=>h.id!==id?h:{...h,completedDates:h.completedDates?.includes(today())?h.completedDates.filter(d=>d!==today()):[...(h.completedDates||[]),today()]})}));
+  const add=()=>{if(!newH.trim())return;update(prev=>({...prev,habits:[...prev.habits,{id:Date.now(),label:newH.trim(),icon:newIcon,completedDates:[]}]}));setNewH("");};
+  const streak=h=>{let s=0;for(let i=0;i<365;i++){const d=new Date();d.setDate(d.getDate()-i);if(!h.completedDates?.includes(d.toISOString().slice(0,10)))break;s++;}return s;};
+  const todayDone=(state.habits||[]).filter(h=>h.completedDates?.includes(today())).length;
+  return(
+    <div style={{display:"flex",flexDirection:"column",gap:14}}>
+      <div className="card" style={{background:"linear-gradient(135deg,rgba(251,191,36,.12),rgba(249,115,22,.08))",border:"1px solid rgba(251,191,36,.3)",borderRadius:18,padding:18,display:"flex",alignItems:"center",gap:16}}>
+        <Ring value={todayDone} max={Math.max((state.habits||[]).length,1)} size={80} stroke={7} color="#fbbf24" label={todayDone} sublabel={`/${(state.habits||[]).length}`}/>
+        <div>
+          <div style={{fontSize:20,fontWeight:800,fontFamily:"'Playfair Display',serif"}}>{(state.habits||[]).length===0?"Sem hábitos":todayDone===(state.habits||[]).length?"Perfeito! 🔥":"Hábitos de Hoje"}</div>
+          <div style={{fontSize:12,color:"rgba(255,255,255,.4)",marginTop:4}}>{(state.habits||[]).length===0?"Adicione hábitos abaixo":`${(state.habits||[]).length-todayDone} restante(s)`}</div>
+        </div>
+      </div>
+      {(state.habits||[]).map(h=>{
+        const done=h.completedDates?.includes(today()),s=streak(h);
+        return(
+          <div key={h.id} className="card" style={{background:done?"rgba(74,222,128,.07)":"rgba(255,255,255,.04)",border:`1px solid ${done?"rgba(74,222,128,.3)":"rgba(255,255,255,.08)"}`,borderRadius:16,padding:14,display:"flex",alignItems:"center",gap:12,transition:"all .3s"}}>
+            <button onClick={()=>toggle(h.id)} style={{width:40,height:40,borderRadius:"50%",border:`2px solid ${done?"#4ade80":"rgba(255,255,255,.2)"}`,background:done?"#4ade80":"transparent",fontSize:done?20:18,display:"flex",alignItems:"center",justifyContent:"center",transition:"all .2s",flexShrink:0}}>
+              {done?"✓":h.icon}
+            </button>
+            <div style={{flex:1}}>
+              <div style={{fontSize:14,fontWeight:600,color:done?"#4ade80":"#fff",textDecoration:done?"line-through":"none"}}>{h.label}</div>
+              {s>0&&<div style={{fontSize:11,color:"#fbbf24",marginTop:2}}>🔥 {s} dia{s>1?"s":""} seguidos</div>}
+            </div>
+            <button onClick={()=>update(prev=>({...prev,habits:prev.habits.filter(x=>x.id!==h.id)}))} style={{background:"none",border:"none",color:"rgba(255,255,255,.2)",fontSize:20,padding:4}}>×</button>
+          </div>
+        );
+      })}
+      <div className="card" style={{background:"rgba(255,255,255,.03)",border:"1px solid rgba(255,255,255,.07)",borderRadius:18,padding:16}}>
+        <div style={{fontSize:13,fontWeight:700,color:"rgba(255,255,255,.5)",marginBottom:12}}>+ Novo Hábito</div>
+        <div style={{display:"flex",flexWrap:"wrap",gap:6,marginBottom:12}}>
+          {ICONS.map(ic=><button key={ic} onClick={()=>setNewIcon(ic)} style={{width:36,height:36,borderRadius:10,border:`2px solid ${newIcon===ic?"#6366f1":"transparent"}`,background:newIcon===ic?"rgba(99,102,241,.2)":"rgba(255,255,255,.06)",fontSize:18}}>{ic}</button>)}
+        </div>
+        <div style={{display:"flex",gap:8}}>
+          <input value={newH} onChange={e=>setNewH(e.target.value)} onKeyDown={e=>e.key==="Enter"&&add()} placeholder="Nome do hábito..." style={{flex:1,background:"rgba(255,255,255,.07)",border:"1px solid rgba(255,255,255,.1)",borderRadius:10,padding:"10px 12px",color:"#fff",fontSize:13}}/>
+          <button onClick={add} style={{padding:"10px 18px",background:"linear-gradient(135deg,#6366f1,#8b5cf6)",border:"none",color:"#fff",borderRadius:10,fontWeight:700,fontSize:16}}>+</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── COACH FLUTUANTE ─── */
+function CoachFloat({state}){
+  const [open,setOpen]=useState(false);
+  const [msgs,setMsgs]=useState([]);
+  const [input,setInput]=useState("");
+  const [loading,setLoading]=useState(false);
+  const endRef=useRef();
+  useEffect(()=>endRef.current?.scrollIntoView({behavior:"smooth"}),[msgs,loading]);
+  const psl=calcPSL(state.scores,state.habits,state.goals);
+  const weakest=PILLARS.slice().sort((a,b)=>(state.scores[a.id]||0)-(state.scores[b.id]||0))[0];
+  const send=async text=>{
+    if(!text.trim()||loading)return;
+    const um={role:"user",content:text};
+    setMsgs(p=>[...p,um]);setInput("");setLoading(true);
+    try{
+      const r=await askAI(`Coach de Vida do app Vida Total. Dados: Nome: ${state.name} | PSL: ${psl}/100 | Área mais fraca: ${weakest.label} (${state.scores[weakest.id]||0}/10) | Hábitos: ${(state.habits||[]).length}. Seja direto, motivador e prático. Use emojis. Português.`,[...msgs,um]);
+      setMsgs(p=>[...p,{role:"assistant",content:r}]);
+    }catch{setMsgs(p=>[...p,{role:"assistant",content:"❌ Erro de conexão."}]);}
+    setLoading(false);
+  };
+  const quick=[`Como melhorar ${weakest.label.toLowerCase()}?`,"Plano para essa semana","Como subir meu PSL Score?"];
+  return(
+    <>
+      <button onClick={()=>setOpen(o=>!o)} style={{position:"fixed",bottom:96,right:18,width:54,height:54,borderRadius:"50%",background:"linear-gradient(135deg,#6366f1,#8b5cf6)",border:"none",fontSize:open?22:24,boxShadow:"0 4px 24px rgba(99,102,241,.5)",zIndex:200,animation:"glow 3s ease infinite"}}>
+        {open?"✕":"🤖"}
+      </button>
+      {open&&(
+        <div style={{position:"fixed",bottom:162,right:14,width:"min(350px,calc(100vw - 28px))",height:460,background:"#13131f",borderRadius:22,border:"1px solid rgba(255,255,255,.1)",display:"flex",flexDirection:"column",zIndex:200,boxShadow:"0 20px 60px rgba(0,0,0,.7)",overflow:"hidden"}}>
+          <div style={{padding:"14px 16px",borderBottom:"1px solid rgba(255,255,255,.07)",display:"flex",alignItems:"center",gap:10,background:"rgba(99,102,241,.08)"}}>
+            <span style={{fontSize:24}}>🤖</span>
+            <div>
+              <div style={{fontSize:14,fontWeight:700}}>Coach de Vida IA</div>
+              <div style={{fontSize:10,color:"#4ade80"}}>● Ativo · PSL {psl}/100</div>
+            </div>
+          </div>
+          <div style={{flex:1,overflowY:"auto",padding:12,display:"flex",flexDirection:"column",gap:10}}>
+            {msgs.length===0&&(
+              <div style={{display:"flex",flexDirection:"column",gap:8}}>
+                <p style={{color:"rgba(255,255,255,.4)",fontSize:13,textAlign:"center"}}>Olá {state.name}! O que quer trabalhar? 🎯</p>
+                {quick.map(q=><button key={q} onClick={()=>send(q)} style={{background:"rgba(99,102,241,.1)",border:"1px solid rgba(99,102,241,.25)",borderRadius:12,padding:"9px 12px",color:"#a5b4fc",fontSize:12,textAlign:"left"}}>{q}</button>)}
+              </div>
+            )}
+            {msgs.map((m,i)=>(
+              <div key={i} style={{display:"flex",justifyContent:m.role==="user"?"flex-end":"flex-start"}}>
+                <div style={{maxWidth:"85%",padding:"10px 14px",borderRadius:m.role==="user"?"16px 16px 4px 16px":"16px 16px 16px 4px",background:m.role==="user"?"linear-gradient(135deg,#6366f1,#8b5cf6)":"rgba(255,255,255,.07)",color:"#fff",fontSize:13,lineHeight:1.6,whiteSpace:"pre-wrap"}}>{m.content}</div>
+              </div>
+            ))}
+            {loading&&<div style={{display:"flex",gap:5,padding:8}}>{[0,1,2].map(i=><div key={i} style={{width:7,height:7,borderRadius:"50%",background:"#6366f1",animation:`pulse 1s ${i*.2}s infinite`}}/>)}</div>}
+            <div ref={endRef}/>
+          </div>
+          <div style={{padding:10,borderTop:"1px solid rgba(255,255,255,.06)",display:"flex",gap:8}}>
+            <input value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>e.key==="Enter"&&send(input)} placeholder="Pergunte ao coach..." style={{flex:1,background:"rgba(255,255,255,.07)",border:"1px solid rgba(255,255,255,.1)",borderRadius:10,padding:"9px 12px",color:"#fff",fontSize:13}}/>
+            <button onClick={()=>send(input)} disabled={!input.trim()||loading} style={{width:38,height:38,borderRadius:10,background:"linear-gradient(135deg,#6366f1,#8b5cf6)",border:"none",color:"#fff",fontSize:18}}>→</button>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
+/* ─── DEV LOGIN ─── */
+function DevLogin({onSuccess,onCancel}){
+  const [pin,setPin]=useState("");
+  const [err,setErr]=useState(false);
+  return(
+    <div style={{background:"#080810",minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",padding:32}}>
+      <div style={{textAlign:"center",width:"100%",maxWidth:300}}>
+        <div style={{fontSize:56,marginBottom:16}}>🔐</div>
+        <h2 style={{color:"#fff",fontFamily:"'Playfair Display',serif",fontSize:22,marginBottom:8}}>Área do Desenvolvedor</h2>
+        <p style={{color:"rgba(255,255,255,.35)",fontSize:13,marginBottom:28}}>Acesso restrito para administradores</p>
+        <input type="password" value={pin} onChange={e=>{setPin(e.target.value);setErr(false);}} onKeyDown={e=>e.key==="Enter"&&(pin===DEV_PIN?onSuccess():(setErr(true),setPin("")))} placeholder="••••" maxLength={8} style={{width:"100%",background:"rgba(255,255,255,.08)",border:`1px solid ${err?"#f87171":"rgba(255,255,255,.15)"}`,borderRadius:14,padding:"16px 18px",color:"#fff",fontSize:28,textAlign:"center",letterSpacing:12,marginBottom:10}}/>
+        {err&&<p style={{color:"#f87171",fontSize:12,marginBottom:12}}>⚠️ PIN incorreto</p>}
+        <button onClick={()=>pin===DEV_PIN?onSuccess():(setErr(true),setPin(""))} style={{width:"100%",padding:14,background:"linear-gradient(135deg,#6366f1,#8b5cf6)",border:"none",color:"#fff",borderRadius:14,fontSize:15,fontWeight:700,marginBottom:10}}>Entrar</button>
+        <button onClick={onCancel} style={{background:"none",border:"none",color:"rgba(255,255,255,.3)",fontSize:13}}>Cancelar</button>
+      </div>
+    </div>
+  );
+}
+
+/* ─── DEV PANEL ─── */
+function DevPanel({state,update,onExit}){
+  const [devTab,setDevTab]=useState("overview");
+  const [broadcast,setBroadcast]=useState("");
+  const [bResult,setBResult]=useState("");
+  const [aiPrompt,setAiPrompt]=useState("");
+  const [aiResult,setAiResult]=useState("");
+  const [loading,setLoading]=useState(false);
+  const psl=calcPSL(state.scores,state.habits,state.goals);
+  const grade=pslGrade(psl);
+  const totalExp=(state.finance?.expenses||[]).reduce((s,e)=>s+Number(e.amount),0);
+
+  const sendBroadcast=async()=>{setLoading(true);setBResult("");try{const r=await askAI("Assistente de comunicação da plataforma Vida Total. Reformule a mensagem do admin de forma profissional, motivadora e com emojis. Português.",[{role:"user",content:broadcast}]);setBResult(r);}catch{setBResult("❌ Erro.");}setLoading(false);};
+  const analyzeUser=async()=>{setLoading(true);setAiResult("");try{const r=await askAI("Analista sênior de bem-estar. Analise o perfil: 1) Diagnóstico completo 2) Pontos críticos 3) Plano de suporte 4) Previsão 30 dias 5) Recomendações. Técnico e detalhado. Português.",[{role:"user",content:`Dados: ${JSON.stringify(state)}\nContexto: ${aiPrompt}`}]);setAiResult(r);}catch{setAiResult("❌ Erro.");}setLoading(false);};
+
+  const TABS=[{id:"overview",l:"📊 Overview"},{id:"user",l:"👤 Usuário"},{id:"broadcast",l:"📢 Mensagens"},{id:"aitools",l:"🔬 IA Tools"},{id:"config",l:"⚙️ Config"}];
+
+  return(
+    <div style={{background:"#080810",minHeight:"100vh",color:"#fff",fontFamily:"monospace,sans-serif",paddingBottom:20}}>
+      <div style={{background:"rgba(99,102,241,.1)",borderBottom:"1px solid rgba(99,102,241,.25)",padding:"16px 18px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+        <div>
+          <div style={{fontSize:9,color:"#6366f1",letterSpacing:4,fontWeight:700}}>◆ DEV CONSOLE · VIDA TOTAL</div>
+          <div style={{fontSize:20,fontWeight:900,fontFamily:"'Playfair Display',serif",marginTop:2}}>🔐 Admin Panel</div>
+        </div>
+        <button onClick={onExit} style={{padding:"8px 14px",background:"rgba(244,63,94,.12)",border:"1px solid rgba(244,63,94,.3)",color:"#f43f5e",borderRadius:10,fontSize:12,fontWeight:600}}>← Sair</button>
+      </div>
+      <div style={{display:"flex",gap:4,padding:"12px 16px",overflowX:"auto",borderBottom:"1px solid rgba(255,255,255,.05)"}}>
+        {TABS.map(t=><button key={t.id} onClick={()=>setDevTab(t.id)} style={{padding:"7px 13px",borderRadius:8,border:"none",fontSize:11,fontWeight:700,whiteSpace:"nowrap",background:devTab===t.id?"#6366f1":"rgba(255,255,255,.06)",color:devTab===t.id?"#fff":"rgba(255,255,255,.4)"}}>{t.l}</button>)}
+      </div>
+      <div style={{padding:18}}>
+        {devTab==="overview"&&(
+          <div style={{display:"flex",flexDirection:"column",gap:14}}>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:10}}>
+              {[{l:"PSL Score",v:`${psl}/100`,c:grade.color},{l:"Nível",v:grade.label,c:grade.color},{l:"Hábitos",v:(state.habits||[]).length,c:"#fbbf24"},{l:"Hoje ✓",v:(state.habits||[]).filter(h=>h.completedDates?.includes(today())).length,c:"#4ade80"},{l:"Renda",v:`R$${Number(state.finance?.income||0).toFixed(0)}`,c:"#4ade80"},{l:"Gastos",v:`R$${totalExp.toFixed(0)}`,c:"#f87171"}].map(s=>(
+                <div key={s.l} style={{background:"rgba(255,255,255,.04)",border:`1px solid ${s.c}22`,borderRadius:12,padding:12}}>
+                  <div style={{fontSize:9,color:"rgba(255,255,255,.3)",marginBottom:4,letterSpacing:1}}>{s.l}</div>
+                  <div style={{fontSize:20,fontWeight:900,color:s.c}}>{s.v}</div>
+                </div>
+              ))}
+            </div>
+            {PILLARS.map(p=>{const s=state.scores[p.id]||0;return(
+              <div key={p.id} style={{display:"flex",alignItems:"center",gap:8}}>
+                <span style={{fontSize:12,width:90,color:"rgba(255,255,255,.45)",flexShrink:0}}>{p.icon} {p.label.slice(0,10)}</span>
+                <div style={{flex:1,height:5,background:"rgba(255,255,255,.06)",borderRadius:3}}><div style={{height:"100%",width:`${s*10}%`,background:p.color,borderRadius:3}}/></div>
+                <span style={{fontSize:11,color:p.color,fontWeight:800,width:20,textAlign:"right"}}>{s}</span>
+              </div>
+            );})}
+          </div>
+        )}
+        {devTab==="user"&&(
+          <div style={{display:"flex",flexDirection:"column",gap:14}}>
+            <div style={{background:"rgba(255,255,255,.04)",border:"1px solid rgba(99,102,241,.2)",borderRadius:14,padding:16}}>
+              <div style={{fontSize:10,color:"#6366f1",letterSpacing:2,marginBottom:12}}>PERFIL DO USUÁRIO</div>
+              {[{k:"Nome",v:state.name,c:"#fff"},{k:"PSL Score",v:`${psl}/100 — ${grade.label}`,c:grade.color},{k:"Hábitos",v:(state.habits||[]).length,c:"#fbbf24"},{k:"Renda",v:`R$${Number(state.finance?.income||0).toFixed(0)}`,c:"#4ade80"},{k:"Gastos totais",v:`R$${totalExp.toFixed(2)}`,c:"#f87171"}].map(s=>(
+                <div key={s.k} style={{display:"flex",justifyContent:"space-between",padding:"8px 0",borderBottom:"1px solid rgba(255,255,255,.05)"}}>
+                  <span style={{fontSize:12,color:"rgba(255,255,255,.4)"}}>{s.k}</span>
+                  <span style={{fontSize:12,color:s.c,fontWeight:700}}>{s.v}</span>
+                </div>
+              ))}
+            </div>
+            <pre style={{background:"rgba(255,255,255,.03)",border:"1px solid rgba(255,255,255,.06)",borderRadius:14,padding:14,fontSize:10,color:"rgba(255,255,255,.4)",overflow:"auto",maxHeight:200}}>{JSON.stringify(state,null,2)}</pre>
+          </div>
+        )}
+        {devTab==="broadcast"&&(
+          <div style={{display:"flex",flexDirection:"column",gap:14}}>
+            <div style={{fontSize:13,color:"rgba(255,255,255,.4)"}}>📢 Crie mensagens para os membros da plataforma</div>
+            <textarea value={broadcast} onChange={e=>setBroadcast(e.target.value)} placeholder="Escreva a mensagem..." rows={4} style={{background:"rgba(255,255,255,.06)",border:"1px solid rgba(255,255,255,.1)",borderRadius:12,padding:12,color:"#fff",fontSize:13,resize:"none"}}/>
+            <button onClick={sendBroadcast} disabled={loading||!broadcast.trim()} style={{padding:12,background:loading?"rgba(255,255,255,.1)":"linear-gradient(135deg,#6366f1,#8b5cf6)",border:"none",color:"#fff",borderRadius:12,fontWeight:700,fontSize:14}}>
+              {loading?"⏳ Processando...":"✨ Melhorar com IA"}
+            </button>
+            {bResult&&<div style={{background:"rgba(99,102,241,.08)",border:"1px solid rgba(99,102,241,.25)",borderRadius:14,padding:16,fontSize:14,lineHeight:1.8,whiteSpace:"pre-wrap"}}>{bResult}</div>}
+          </div>
+        )}
+        {devTab==="aitools"&&(
+          <div style={{display:"flex",flexDirection:"column",gap:14}}>
+            {["🏥 Diagnóstico Completo","🚀 Plano de Crescimento 30 dias","⚠️ Áreas Críticas de Intervenção","📚 Recomendações de Conteúdo","📈 Previsão PSL 30 dias"].map(p=>(
+              <button key={p} onClick={()=>setAiPrompt(p)} style={{padding:"11px 14px",background:aiPrompt===p?"rgba(99,102,241,.2)":"rgba(255,255,255,.05)",border:`1px solid ${aiPrompt===p?"rgba(99,102,241,.4)":"rgba(255,255,255,.08)"}`,borderRadius:12,color:aiPrompt===p?"#a5b4fc":"rgba(255,255,255,.55)",fontSize:13,textAlign:"left"}}>{p}</button>
+            ))}
+            <textarea value={aiPrompt} onChange={e=>setAiPrompt(e.target.value)} placeholder="Ou escreva análise customizada..." rows={3} style={{background:"rgba(255,255,255,.06)",border:"1px solid rgba(255,255,255,.1)",borderRadius:12,padding:12,color:"#fff",fontSize:13,resize:"none"}}/>
+            <button onClick={analyzeUser} disabled={loading||!aiPrompt.trim()} style={{padding:12,background:loading?"rgba(255,255,255,.1)":"linear-gradient(135deg,#f97316,#ef4444)",border:"none",color:"#fff",borderRadius:12,fontWeight:700,fontSize:14}}>
+              {loading?"⏳ Analisando...":"🔬 Analisar com IA"}
+            </button>
+            {aiResult&&<div style={{background:"rgba(249,115,22,.07)",border:"1px solid rgba(249,115,22,.22)",borderRadius:14,padding:16,fontSize:13,lineHeight:1.8,whiteSpace:"pre-wrap",color:"rgba(255,255,255,.8)"}}>{aiResult}</div>}
+          </div>
+        )}
+        {devTab==="config"&&(
+          <div style={{display:"flex",flexDirection:"column",gap:12}}>
+            {[{k:"Versão",v:"v3.0.0"},{k:"Modelo IA",v:"claude-sonnet-4"},{k:"Storage",v:"localStorage"},{k:"DEV PIN",v:"••••"},{k:"Acesso Dev",v:"Triple-tap no header"},{k:"PSL Max",v:"100 pontos"},{k:"Áreas",v:`${PILLARS.length} pilares`}].map(s=>(
+              <div key={s.k} style={{display:"flex",justifyContent:"space-between",padding:"10px 14px",background:"rgba(255,255,255,.04)",borderRadius:10}}>
+                <span style={{fontSize:12,color:"rgba(255,255,255,.45)"}}>{s.k}</span>
+                <span style={{fontSize:12,color:"#6366f1",fontWeight:700}}>{s.v}</span>
+              </div>
+            ))}
+            <button onClick={()=>{if(window.confirm("Resetar todos os dados?"))update(INIT);}} style={{padding:12,background:"rgba(244,63,94,.1)",border:"1px solid rgba(244,63,94,.3)",borderRadius:12,color:"#f43f5e",fontSize:13,marginTop:8}}>🗑️ Resetar Dados</button>
+            <button onClick={onExit} style={{padding:12,background:"rgba(255,255,255,.06)",border:"1px solid rgba(255,255,255,.1)",borderRadius:12,color:"rgba(255,255,255,.5)",fontSize:13}}>← Voltar ao App</button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ─── RENDER ─── */
+const root=ReactDOM.createRoot(document.getElementById("root"));
+root.render(<App/>);
 </script>
-
 </body>
 </html>
