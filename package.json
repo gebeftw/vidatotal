@@ -1,0 +1,10 @@
+{
+  "name": "vidatotal",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.133.0",
+    "@vercel/functions": "^3.9.11"
+  }
+}

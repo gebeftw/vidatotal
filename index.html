@@ -557,7 +557,8 @@ function FinanceTab({state,update}){
   const [aiLoading,setAiLoading]=useState(false);
   const CATS=["Alimentação","Moradia","Transporte","Saúde","Lazer","Educação","Assinaturas","Outros"];
   const expenses=state.finance?.expenses||[];
-  const income=Number(state.finance?.income)||0;
+  const waIncome=Number(state.finance?.waIncome)||0;
+  const income=(Number(state.finance?.income)||0)+waIncome;
   const totalExp=expenses.reduce((s,e)=>s+Number(e.amount),0);
   const balance=income-totalExp;
   const savings=income>0?Math.round((balance/income)*100):0;
@@ -567,6 +568,32 @@ function FinanceTab({state,update}){
     update(prev=>({...prev,finance:{...prev.finance,expenses:[...(prev.finance?.expenses||[]),{...newExp,id:Date.now(),date:today()}]}}));
     setNewExp({label:"",amount:"",category:"Alimentação"});setShowAdd(false);
   };
+  /* ─── Sincronização com o assistente do WhatsApp (/api/finance) ─── */
+  const waToken=state.finance?.waToken||"";
+  const [tokenInput,setTokenInput]=useState(waToken);
+  const [syncMsg,setSyncMsg]=useState("");
+  const syncWhatsApp=async(token=waToken)=>{
+    if(!token)return;
+    setSyncMsg("⏳ Sincronizando...");
+    try{
+      const res=await fetch("/api/finance",{headers:{Authorization:`Bearer ${token}`}});
+      if(res.status===401){setSyncMsg("❌ Token inválido");return;}
+      if(!res.ok)throw new Error();
+      const {transactions}=await res.json();
+      const month=today().slice(0,7);
+      const waExp=transactions.filter(t=>t.type==="expense").map(t=>({id:"wa_"+t.id,label:t.description,amount:t.amount,category:t.category,date:t.date,source:"whatsapp"}));
+      const monthIncome=transactions.filter(t=>t.type==="income"&&t.date.startsWith(month)).reduce((s,t)=>s+t.amount,0);
+      update(prev=>({...prev,finance:{...prev.finance,waToken:token,waIncome:monthIncome,
+        expenses:[...(prev.finance?.expenses||[]).filter(e=>e.source!=="whatsapp"),...waExp]}}));
+      setSyncMsg(`✅ ${waExp.length} gastos do WhatsApp sincronizados`);
+    }catch{setSyncMsg("❌ Não foi possível sincronizar");}
+  };
+  useEffect(()=>{if(waToken)syncWhatsApp(waToken);},[]);
+  const removeExpense=e=>{
+    update(prev=>({...prev,finance:{...prev.finance,expenses:prev.finance.expenses.filter(x=>x.id!==e.id)}}));
+    if(e.source==="whatsapp"&&waToken)fetch(`/api/finance?id=${encodeURIComponent(e.id.slice(3))}`,{method:"DELETE",headers:{Authorization:`Bearer ${waToken}`}}).catch(()=>{});
+  };
+
   const askFinance=async()=>{
     setAiLoading(true);
     try{const r=await askAI("Consultor financeiro pessoal. Dê conselhos práticos e motivadores. Use emojis. Português.",[{role:"user",content:`Renda: R$${income} | Gastos: R$${totalExp.toFixed(2)} | Saldo: R$${balance.toFixed(2)} | Poupança: ${savings}%\n\nPergunta: ${aiQ}`}]);setAiR(r);}
@@ -597,6 +624,21 @@ function FinanceTab({state,update}){
       <div className="card" style={{background:"rgba(255,255,255,.04)",border:"1px solid rgba(255,255,255,.08)",borderRadius:14,padding:14,display:"flex",gap:10,alignItems:"center"}}>
         <span style={{fontSize:13,color:"rgba(255,255,255,.5)",whiteSpace:"nowrap"}}>Renda R$:</span>
         <input type="number" value={state.finance?.income||""} onChange={e=>update(prev=>({...prev,finance:{...prev.finance,income:e.target.value}}))} placeholder="0" style={{flex:1,background:"rgba(255,255,255,.07)",border:"1px solid rgba(255,255,255,.1)",borderRadius:10,padding:"8px 12px",color:"#fff",fontSize:14}}/>
+        {waIncome>0&&<span style={{fontSize:11,color:"#4ade80",whiteSpace:"nowrap"}}>+R${waIncome.toFixed(0)} 📲</span>}
+      </div>
+      <div className="card" style={{background:"rgba(37,211,102,.06)",border:"1px solid rgba(37,211,102,.25)",borderRadius:16,padding:14,display:"flex",flexDirection:"column",gap:8}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+          <div style={{fontSize:13,fontWeight:700}}>📲 Assistente no WhatsApp</div>
+          {waToken&&<button onClick={()=>syncWhatsApp()} style={{padding:"5px 12px",background:"#25d366",border:"none",color:"#000",borderRadius:20,fontSize:11,fontWeight:700}}>↻ Sincronizar</button>}
+        </div>
+        {!waToken&&<>
+          <div style={{fontSize:11,color:"rgba(255,255,255,.45)",lineHeight:1.5}}>Mande seus gastos pelo WhatsApp ("gastei 45 no mercado") e eles aparecem aqui. Cole o APP_TOKEN configurado no servidor:</div>
+          <div style={{display:"flex",gap:8}}>
+            <input type="password" value={tokenInput} onChange={e=>setTokenInput(e.target.value)} placeholder="APP_TOKEN" style={{flex:1,background:"rgba(255,255,255,.07)",border:"1px solid rgba(255,255,255,.1)",borderRadius:10,padding:"8px 12px",color:"#fff",fontSize:13}}/>
+            <button onClick={()=>syncWhatsApp(tokenInput.trim())} disabled={!tokenInput.trim()} style={{padding:"8px 14px",background:"#25d366",border:"none",color:"#000",borderRadius:10,fontWeight:700,fontSize:12}}>Conectar</button>
+          </div>
+        </>}
+        {syncMsg&&<div style={{fontSize:11,color:"rgba(255,255,255,.5)"}}>{syncMsg}</div>}
       </div>
       <div className="card" style={{background:"rgba(255,255,255,.03)",border:"1px solid rgba(255,255,255,.07)",borderRadius:18,padding:16}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
@@ -606,10 +648,10 @@ function FinanceTab({state,update}){
         {expenses.length===0&&<div style={{color:"rgba(255,255,255,.25)",fontSize:13,textAlign:"center",padding:"16px 0"}}>Nenhum gasto registrado</div>}
         {expenses.slice(-8).reverse().map(e=>(
           <div key={e.id} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"9px 0",borderBottom:"1px solid rgba(255,255,255,.05)"}}>
-            <div><div style={{fontSize:13}}>{e.label}</div><div style={{fontSize:10,color:"rgba(255,255,255,.3)"}}>{e.category} · {e.date}</div></div>
+            <div><div style={{fontSize:13}}>{e.label}</div><div style={{fontSize:10,color:"rgba(255,255,255,.3)"}}>{e.source==="whatsapp"?"📲 ":""}{e.category} · {e.date}</div></div>
             <div style={{display:"flex",alignItems:"center",gap:10}}>
               <span style={{fontSize:14,fontWeight:700,color:"#f87171"}}>-R${Number(e.amount).toFixed(2)}</span>
-              <button onClick={()=>update(prev=>({...prev,finance:{...prev.finance,expenses:prev.finance.expenses.filter(x=>x.id!==e.id)}}))} style={{background:"none",border:"none",color:"rgba(255,255,255,.2)",fontSize:18}}>×</button>
+              <button onClick={()=>removeExpense(e)} style={{background:"none",border:"none",color:"rgba(255,255,255,.2)",fontSize:18}}>×</button>
             </div>
           </div>
         ))}
